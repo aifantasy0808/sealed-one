@@ -106,7 +106,7 @@ const SCENES = {
     id: "SIN03_1",
     type: "scene",
     pov: "record",
-    title: "태초의 검은색",
+    title: "창조",
     body: [
       "태초의 실험실이었다.",
       "",
@@ -181,7 +181,7 @@ const SCENES = {
     id: "SIN05",
     type: "scene",
     pov: "lily",
-    title: "생명과 소멸",
+    title: "해결법",
     body: [
       "그저 돌아가고 싶었다.",
       "",
@@ -342,7 +342,7 @@ const SCENES = {
     id: "SIN07_1",
     type: "scene",
     pov: "record",
-    title: "전쟁의 결과",
+    title: "결과",
     body: [
       "그녀는 태초의 전쟁을 벌였다.",
       "",

@@ -276,8 +276,6 @@ button {
   left: 72px;
   z-index: 150;
   font-family: "SealedTitle", "Noto Serif KR", serif;
-  font-weight: 800;
-  letter-spacing: 0.02em;
   font-size: clamp(3.4rem, 5.7vw, 6.6rem);
   line-height: 1;
   color: rgba(255, 255, 255, 0.96);
