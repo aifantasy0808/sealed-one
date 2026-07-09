@@ -698,7 +698,7 @@ const SCENES = {
     dialogue: null,
     choices: [
       { label: "다시하기", action: "restart" },
-      { label: "뒤로가기", action: "back" }
+
     ],
     videoSrc: "videos/true_end.mp4",
     bgmSrc: "audio/true_end.mp3"
