@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="robots" content="noindex, nofollow" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>봉인된 자</title>
+  <link rel="stylesheet" href="./style.css?v=17" />
+</head>
+<body>
+  <div id="app">
+    <div class="mobile-stage-viewport">
+      <section id="gameStage" class="game-stage pov-record">
+        <video id="bgVideo" class="bg-video" autoplay muted loop playsinline controlslist="nodownload"></video>
+
+        <div class="video-fallback"></div>
+        <div class="fog-layer"></div>
+        <div class="ink-dots"></div>
+
+        <audio id="bgmAudio" loop></audio>
+
+        <header class="top-controls">
+          <button id="routeBtn" class="top-btn">루트</button>
+          <button id="saveBtn" class="top-btn">저장</button>
+          <button id="backBtn" class="top-btn">뒤로</button>
+          <button id="homeBtn" class="top-btn home-btn">처음</button>
+          <button id="videoPauseBtn" class="top-btn pause-btn" type="button" aria-label="영상 일시정지">정지</button>
+        </header>
+
+        <main class="scene-layer">
+          <section id="titleScreen" class="title-screen">
+            <h1 class="main-title">봉인된 자</h1>
+            <button id="startGameBtn" class="start-game-btn">시작한다</button>
+            <p class="title-guide">※ 주의! 어두운 분위기, 자극적인 표현이 포함되어 있습니다.</p>
+          </section>
+
+          <section id="playScreen" class="play-screen hidden">
+            <div id="endingBadge" class="ending-badge hidden"></div>
+            <div id="sceneTitle" class="scene-title hidden"></div>
+
+            <section id="bodyBox" class="body-box"></section>
+
+            <section id="choiceBox" class="choice-box"></section>
+
+            <section id="inputPanel" class="input-panel hidden">
+              <label for="nameInput">봉인된 자, 이름을 말하라</label>
+              <div class="input-row">
+                <input id="nameInput" type="text" autocomplete="off" placeholder="이름을 새긴다" />
+                <button id="nameSubmitBtn">확인</button>
+              </div>
+            </section>
+
+            <section id="dialogueBox" class="dialogue-box hidden">
+              <div id="speakerName" class="speaker-name"></div>
+              <div id="dialogueText" class="dialogue-text"></div>
+            </section>
+          </section>
+        </main>
+
+        <div id="fakeEndingOverlay" class="fake-ending-overlay hidden">
+          <div class="fake-dark"></div>
+
+          <button id="fakeCloseBtn" class="fake-close-btn" type="button">×</button>
+
+          <div class="fake-content">
+            <div id="fakeWord" class="fake-word-center"></div>
+            <div id="fakeDialogueBox" class="fake-dialogue-box">
+              <div id="fakeSpeaker" class="fake-speaker"></div>
+              <div id="fakeDialogue" class="fake-dialogue"></div>
+            </div>
+          </div>
+        </div>
+
+        <div id="namePunishOverlay" class="name-punish-overlay hidden">
+          <video id="namePunishVideo" class="name-punish-video" muted playsinline></video>
+
+          <div class="name-punish-dark"></div>
+
+          <div class="name-punish-content">
+            <div id="namePunishText" class="name-punish-text">돌아가!</div>
+            <div class="name-punish-guide">화면을 클릭하면 처음으로 돌아갑니다.</div>
+          </div>
+        </div>
+
+        <div id="toast" class="toast hidden"></div>
+
+        <div class="ai-credit">
+          일부 장면은 AI 도구를 활용해 제작되었습니다
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div id="routeModal" class="modal hidden">
+    <div class="modal-card route-card">
+      <div class="modal-head">
+        <h2>선택의 루트</h2>
+        <button id="routeCloseBtn" class="modal-close">×</button>
+      </div>
+      <p class="modal-note">※ 드래그하거나 스와이프해서 좌우로 이동할 수 있습니다.</p>
+      <div id="routeViewport" class="route-viewport">
+        <div id="routeCanvas" class="route-canvas"></div>
+      </div>
+    </div>
+  </div>
+
+  <div id="confirmModal" class="modal hidden">
+    <div class="modal-card confirm-card">
+      <br><h2>처음으로 돌아가시겠습니까?</h2>
+      <p>지금까지의 선택은 모두 사라집니다.</p>
+      <div class="modal-actions">
+        <button id="cancelRestartBtn">취소</button>
+        <button id="confirmRestartBtn" class="danger">처음으로</button>
+      </div>
+    </div>
+  </div>
+
+  <div id="saveModal" class="modal hidden">
+    <div class="modal-card save-card">
+      <div class="modal-head">
+        <h2>저장 슬롯</h2>
+        <button id="saveCloseBtn" class="modal-close">×</button>
+      </div>
+      <div id="slotList" class="slot-list"></div>
+    </div>
+  </div>
+
+  <svg width="0" height="0" style="position:absolute;">
+    <filter id="inkFilter">
+      <feTurbulence type="fractalNoise" baseFrequency="0.85" numOctaves="2" result="noise" />
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="2.2" />
+    </filter>
+  </svg>
+
+  <script src="./game.js?v=17"></script>
+</body>
+</html>

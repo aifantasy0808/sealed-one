@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1200 150" preserveAspectRatio="none">
+  <defs>
+    <filter id="roughBrush">
+      <feTurbulence
+        type="fractalNoise"
+        baseFrequency="0.02 0.12"
+        numOctaves="3"
+        seed="11"
+        result="noise"
+      />
+      <feDisplacementMap
+        in="SourceGraphic"
+        in2="noise"
+        scale="13"
+        xChannelSelector="R"
+        yChannelSelector="G"
+      />
+    </filter>
+
+    <filter id="softEdge">
+      <feGaussianBlur stdDeviation="0.35" />
+    </filter>
+  </defs>
+
+  <!-- 바깥 붓자국 -->
+  <path
+    d="
+      M18 82
+      C46 44, 116 28, 224 23
+      C386 15, 552 17, 708 25
+      C858 32, 1010 37, 1116 50
+      C1170 56, 1190 68, 1185 80
+      C1179 95, 1135 103, 1064 109
+      C920 120, 746 119, 562 115
+      C380 112, 214 111, 92 101
+      C33 96, 3 89, 18 82
+      Z
+    "
+    fill="black"
+    filter="url(#roughBrush)"
+  />
+
+  <!-- 안쪽 진한 먹 -->
+  <path
+    d="
+      M70 80
+      C145 54, 275 47, 438 45
+      C636 42, 818 47, 1006 58
+      C1075 62, 1132 69, 1156 78
+      C1122 90, 1038 95, 930 98
+      C760 103, 580 101, 398 98
+      C252 96, 134 92, 62 86
+      C48 84, 52 82, 70 80
+      Z
+    "
+    fill="black"
+    opacity="0.62"
+    filter="url(#softEdge)"
+  />
+
+  <!-- 아래쪽 번짐 -->
+  <path
+    d="
+      M85 100
+      C230 107, 410 110, 620 112
+      C802 114, 986 111, 1100 102
+      C1035 120, 850 128, 610 126
+      C390 124, 198 118, 78 107
+      C52 105, 54 99, 85 100
+      Z
+    "
+    fill="black"
+    opacity="0.28"
+    filter="url(#softEdge)"
+  />
+
+  <!-- 앞쪽 거친 끝 -->
+  <path
+    d="
+      M15 78
+      C34 68, 55 65, 82 67
+      C58 72, 46 82, 70 94
+      C42 94, 20 91, 9 84
+      C5 81, 7 78, 15 78
+      Z
+    "
+    fill="black"
+    opacity="0.85"
+    filter="url(#roughBrush)"
+  />
+
+  <!-- 뒤쪽 가늘게 빠지는 끝 -->
+  <path
+    d="
+      M1060 54
+      C1120 56, 1176 64, 1190 74
+      C1180 86, 1132 93, 1068 97
+      C1112 88, 1118 72, 1060 54
+      Z
+    "
+    fill="black"
+    opacity="0.74"
+    filter="url(#roughBrush)"
+  />
+</svg>
