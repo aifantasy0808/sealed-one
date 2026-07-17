@@ -5,7 +5,9 @@
   <meta name="robots" content="noindex, nofollow" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>봉인된 자</title>
-  <link rel="stylesheet" href="./style.css?v=19" />
+  <link rel="stylesheet" href="./css/base.css?v=20" />
+<link rel="stylesheet" href="./css/pc.css?v=20" />
+<link rel="stylesheet" href="./css/mobile.css?v=20" />
 </head>
 <body>
   <div id="app">
@@ -22,7 +24,7 @@
         <header class="top-controls">
           <button id="routeBtn" class="top-btn">루트</button>
           <button id="saveBtn" class="top-btn">저장</button>
-          <button id="backBtn" class="top-btn">뒤로</button>
+          <button id="backBtn" class="top-btn" aria-label="뒤로가기">▲</button>
           <button id="homeBtn" class="top-btn home-btn">처음</button>
           <button id="videoPauseBtn" class="top-btn pause-btn" type="button" aria-label="영상 일시정지">정지</button>
         </header>
@@ -31,7 +33,7 @@
           <section id="titleScreen" class="title-screen">
             <h1 class="main-title">봉인된 자</h1>
             <button id="startGameBtn" class="start-game-btn">시작한다</button>
-            <p class="title-guide">※ 주의! 어두운 분위기, 자극적인 표현이 포함되어 있습니다.</p>
+            <p class="title-guide">※ 주의! 자극적인 영상이 포함되어 있습니다.</p>
           </section>
 
           <section id="playScreen" class="play-screen hidden">
@@ -132,6 +134,7 @@
     </filter>
   </svg>
 
-  <script src="./game.js?v=19"></script>
+  <script src="./js/scenes.js?v=20"></script>
+<script src="./js/game.js?v=20"></script>
 </body>
 </html>

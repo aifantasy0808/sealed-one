@@ -1,0 +1,560 @@
+/* =========================================================
+   봉인된 자 - mobile.css
+   모바일 전용 보정 스타일
+   - base.css, pc.css 다음에 로드
+========================================================= */
+
+/* =========================================================
+   Mobile Portrait
+========================================================= */
+
+@media (max-width: 900px) and (orientation: portrait) {
+  html,
+  body,
+  #app {
+    width: 100vw !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+  }
+
+  .mobile-stage-viewport {
+    position: fixed !important;
+    inset: 0 !important;
+    width: 100vw !important;
+    height: 100dvh !important;
+    overflow: hidden !important;
+    background: #000 !important;
+  }
+
+  #gameStage.game-stage {
+    width: 100vw !important;
+    height: 100dvh !important;
+    min-width: 0 !important;
+    min-height: 100dvh !important;
+    overflow: hidden !important;
+    touch-action: none !important;
+  }
+
+  .bg-video {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    object-position: var(--mobile-video-x, 50%) 50% !important;
+    transform: none !important;
+    transition: none !important;
+  }
+
+  .game-stage.video-panning .bg-video {
+    transition: none !important;
+  }
+
+  .top-controls {
+    position: fixed !important;
+    top: calc(var(--mobile-vv-offset-top, 0px) + env(safe-area-inset-top, 0px) + 18px) !important;
+    left: 34px !important;
+    right: 20px !important;
+    z-index: 5000 !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+    gap: 28px !important;
+    padding: 0 !important;
+  }
+
+  #gameStage.started .top-controls,
+  #gameStage.is-typing-name .top-controls,
+  #gameStage.started.is-typing-name .top-controls {
+    display: flex !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    pointer-events: auto !important;
+  }
+
+  .top-btn {
+    min-width: auto !important;
+    width: auto !important;
+    height: auto !important;
+    padding: 0 !important;
+    border: none !important;
+    border-radius: 0 !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    color: rgba(255, 238, 220, 0.92) !important;
+    font-size: 0.98rem !important;
+    line-height: 1.2 !important;
+    text-shadow:
+      0 2px 7px rgba(0, 0, 0, 0.95),
+      0 0 10px rgba(0, 0, 0, 0.75) !important;
+  }
+
+  .home-btn {
+    color: rgba(255, 170, 170, 0.96) !important;
+  }
+
+  .pause-btn.video-paused {
+    color: rgba(145, 200, 255, 0.98) !important;
+  }
+
+  .scene-title {
+    position: fixed !important;
+    left: 34px !important;
+    top: calc(env(safe-area-inset-top, 0px) + 94px) !important;
+    z-index: 820 !important;
+    max-width: 82vw !important;
+    font-size: clamp(2.55rem, 12.5vw, 4.4rem) !important;
+  }
+
+.body-box {
+  position: fixed !important;
+  left: 44px !important;
+  top: calc(env(safe-area-inset-top, 0px) + 190px) !important;
+  z-index: 700 !important;
+  width: calc(100vw - 88px) !important;
+  max-width: none !important;
+  min-height: 0 !important;
+  max-height: 42dvh !important;
+  transform: none !important;
+  margin: 0 !important;
+  border-radius: 20px !important;
+  clip-path: inset(0 round 20px) !important;
+  touch-action: none !important;
+}
+
+  .body-scroll-content {
+    padding: 25px 28px 40px !important;
+  }
+
+  .body-line {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-height: 1.68em !important;
+    line-height: 1.68 !important;
+    white-space: normal !important;
+    word-break: keep-all !important;
+    overflow-wrap: normal !important;
+    line-break: strict !important;
+  }
+
+  .body-line.empty {
+    min-height: 0.78em !important;
+  }
+
+  .mobile-word {
+    display: inline-block;
+    white-space: nowrap;
+  }
+
+  .novel-char {
+    display: inline !important;
+    font-size: clamp(1rem, 4.05vw, 1.13rem) !important;
+    line-height: 1.68 !important;
+  }
+
+  .choice-box {
+    position: fixed !important;
+    left: 28px !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 100px) !important;
+    z-index: 760 !important;
+    width: calc(100vw - 56px) !important;
+    max-width: none !important;
+    transform: none !important;
+    display: flex !important;
+    flex-direction: column !important;
+    gap: 12px !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+  }
+
+  .choice-button {
+    width: 100% !important;
+    min-height: 54px !important;
+    padding: 0.7rem 1rem !important;
+    border-radius: 999px !important;
+    font-size: clamp(0.94rem, 4vw, 1.06rem) !important;
+    line-height: 1.42 !important;
+    letter-spacing: 0 !important;
+    word-break: keep-all !important;
+    white-space: normal !important;
+    color: rgba(255, 247, 238, 0.98) !important;
+  }
+
+  .choice-label,
+  .choice-char {
+    opacity: 1 !important;
+    visibility: visible !important;
+    filter: none !important;
+    transform: none !important;
+    animation: none !important;
+  }
+
+  .input-panel {
+    position: fixed !important;
+    left: 28px !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 72px) !important;
+    z-index: 780 !important;
+    width: calc(100vw - 56px) !important;
+    max-width: none !important;
+    transform: none !important;
+    padding: 0.82rem !important;
+  }
+
+  .input-panel label {
+    margin-bottom: 0.5rem !important;
+    font-size: 0.82rem !important;
+  }
+
+  .input-row {
+    display: flex !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  .input-row input {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    width: auto !important;
+    height: 42px !important;
+    padding: 0 10px !important;
+    font-size: 0.95rem !important;
+  }
+
+  .input-row button {
+    flex: 0 0 58px !important;
+    width: 58px !important;
+    min-width: 58px !important;
+    height: 42px !important;
+    font-size: 0.74rem !important;
+  }
+
+  #gameStage.is-typing-name .choice-box {
+    display: none !important;
+  }
+
+  #gameStage.is-typing-name #inputPanel.input-panel:not(.hidden) {
+    position: fixed !important;
+    left: 50% !important;
+    top: var(--mobile-vv-center-y, 50dvh) !important;
+    right: auto !important;
+    bottom: auto !important;
+    width: calc(100vw - 44px) !important;
+    max-width: 520px !important;
+    transform: translate(-50%, -50%) !important;
+    z-index: 1300 !important;
+    padding: 0.95rem !important;
+  }
+
+  #gameStage.is-typing-name #inputPanel .input-row {
+    display: flex !important;
+    gap: 8px !important;
+    width: 100% !important;
+  }
+
+  #gameStage.is-typing-name #inputPanel .input-row input {
+    flex: 1 1 auto !important;
+    min-width: 0 !important;
+    width: auto !important;
+  }
+
+  #gameStage.is-typing-name #inputPanel .input-row button {
+    flex: 0 0 58px !important;
+    width: 58px !important;
+    min-width: 58px !important;
+  }
+
+  #gameStage.is-typing-name #inputPanel.input-blue {
+    border-color: rgba(80, 140, 230, 0.9) !important;
+    box-shadow:
+      0 0 18px rgba(80, 140, 230, 0.32),
+      inset 0 0 16px rgba(80, 140, 230, 0.08) !important;
+  }
+
+  #gameStage.is-typing-name #inputPanel.input-shake {
+    animation: mobileNamePanelBoing 0.34s ease !important;
+  }
+
+  .game-stage.is-typing-name .ai-credit {
+    display: none !important;
+  }
+
+  .dialogue-box {
+    position: fixed !important;
+    left: 50% !important;
+    top: 56% !important;
+    bottom: auto !important;
+    z-index: 780 !important;
+    width: calc(100vw - 56px) !important;
+    max-width: none !important;
+    transform: translate(-50%, -50%) !important;
+    padding: 20px 22px 24px !important;
+  }
+
+  .dialogue-box.dialogue-reveal {
+    opacity: 1 !important;
+    transform: translate(-50%, -50%) !important;
+  }
+
+  .speaker-name {
+    margin-bottom: 10px !important;
+    font-size: 0.88rem !important;
+  }
+
+  .dialogue-text {
+    font-size: 1.04rem !important;
+    line-height: 1.65 !important;
+    word-break: keep-all !important;
+  }
+
+  .ai-credit {
+    right: 20px !important;
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 16px) !important;
+    z-index: 800 !important;
+    max-width: 80vw !important;
+    padding: 5px 8px !important;
+    font-size: 0.62rem !important;
+    opacity: 0.68 !important;
+  }
+
+  .pov-ending .scene-title {
+    top: calc(env(safe-area-inset-top, 0px) + 94px) !important;
+    left: 34px !important;
+    z-index: 855 !important;
+    max-width: 34vw !important;
+    font-size: clamp(2.2rem, 11vw, 3.8rem) !important;
+  }
+
+  .pov-ending .ending-badge {
+    top: calc(env(safe-area-inset-top, 0px) + 132px) !important;
+    left: 50% !important;
+    z-index: 850 !important;
+    transform: translateX(-50%) !important;
+    min-width: 150px !important;
+    max-width: 58vw !important;
+    padding: 7px 16px 8px !important;
+  }
+
+  .pov-ending .ending-badge-label {
+    font-size: 0.72rem !important;
+    letter-spacing: 0.22em !important;
+  }
+
+  .pov-ending .body-box {
+    top: calc(env(safe-area-inset-top, 0px) + 252px) !important;
+    left: 44px !important;
+    width: calc(100vw - 88px) !important;
+    height: 36dvh !important;
+    max-height: 36dvh !important;
+  }
+
+  .pov-ending .body-scroll-content {
+    padding: 22px 30px 52px !important;
+  }
+
+  .pov-ending .choice-box {
+    bottom: calc(env(safe-area-inset-bottom, 0px) + 100px) !important;
+  }
+
+  /* TRUE END 다시 하기 버튼 가운데 정렬 */
+  .game-stage.scene-end_lily .choice-button {
+    text-align: center !important;
+    padding-left: 0 !important;
+    padding-right: 0 !important;
+  }
+
+  .game-stage.scene-end_lily .choice-label {
+    display: block !important;
+    width: 100% !important;
+    text-align: center !important;
+  }
+
+  .fake-ending-overlay {
+    z-index: 980 !important;
+  }
+
+  .fake-close-btn {
+    top: calc(env(safe-area-inset-top, 0px) + 18px) !important;
+    right: 22px !important;
+    width: 38px !important;
+    height: 38px !important;
+    font-size: 1.4rem !important;
+  }
+
+  .fake-content {
+    width: 86vw !important;
+  }
+
+  .fake-dialogue-box {
+    padding: 16px 18px 20px !important;
+  }
+
+  .fake-dialogue {
+    font-size: 0.95rem !important;
+    line-height: 1.6 !important;
+  }
+
+  .modal {
+    padding: 18px !important;
+  }
+
+  .modal-card {
+    width: 94vw !important;
+    max-height: 82dvh !important;
+    padding: 18px !important;
+  }
+
+  /* 모바일 루트 모달만 크기 축소 */
+  .modal-card.route-card {
+    width: calc(100vw - 72px) !important;
+    max-width: 340px !important;
+    max-height: 42dvh !important;
+    padding: 16px !important;
+    border-radius: 18px !important;
+    overflow: hidden !important;
+  }
+
+  .route-card .modal-head {
+    margin-bottom: 8px !important;
+  }
+
+  .route-card .modal-head h2 {
+    font-size: 1.08rem !important;
+  }
+
+  .route-card .modal-note {
+    margin-bottom: 10px !important;
+    font-size: 0.72rem !important;
+    line-height: 1.35 !important;
+  }
+
+  .route-card .modal-close {
+    width: 34px !important;
+    height: 34px !important;
+    font-size: 1.35rem !important;
+  }
+
+  .route-card .route-viewport {
+    height: 42dvh !important;
+    min-height: 260px !important;
+    max-height: 340px !important;
+    border-radius: 14px !important;
+    overflow: auto !important;
+  }
+
+  .route-card .route-canvas {
+    padding: 18px 80px 80px 18px !important;
+  }
+
+  .route-card .route-step {
+    width: 220px !important;
+  }
+
+  .route-card .route-node {
+    min-height: 120px !important;
+    padding: 14px !important;
+  }
+
+  .slot {
+    grid-template-columns: 1fr !important;
+  }
+
+  .slot-info,
+  .slot-buttons {
+    grid-column: auto !important;
+    grid-row: auto !important;
+  }
+
+  .slot-buttons {
+    justify-content: flex-start !important;
+  }
+}
+
+/* =========================
+   Mobile Name Input Motion
+========================= */
+
+@keyframes mobileNamePanelBoing {
+  0% {
+    transform: translate(-50%, -50%) scaleX(1) scaleY(1);
+  }
+
+  28% {
+    transform: translate(-50%, -50%) scaleX(0.965) scaleY(1.025);
+  }
+
+  56% {
+    transform: translate(-50%, -50%) scaleX(1.025) scaleY(0.98);
+  }
+
+  100% {
+    transform: translate(-50%, -50%) scaleX(1) scaleY(1);
+  }
+}
+
+/* =========================
+   Mobile Landscape Notice
+========================= */
+
+@media (max-width: 900px) and (orientation: landscape) {
+  .mobile-stage-viewport::before {
+    content: "세로 화면으로 보는 것을 권장합니다.";
+    position: fixed;
+    inset: 0;
+    z-index: 2000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 24px;
+    background: rgba(0, 0, 0, 0.9);
+    color: #fff;
+    font-family: "SealedUI", "Noto Serif KR", serif;
+    font-size: 1.1rem;
+    line-height: 1.6;
+    text-align: center;
+  }
+}
+
+/* =========================
+   Mobile Fake Replay Button
+========================= */
+
+@media (max-width: 900px) and (orientation: portrait) {
+  .choice-box.fake-replay-mode {
+    left: var(--fake-replay-left, 50%) !important;
+    top: var(--fake-replay-top, 70%) !important;
+    bottom: auto !important;
+    width: auto !important;
+    transform: translateX(-50%) !important;
+  }
+
+  .choice-box.fake-replay-mode .choice-button {
+    min-width: 210px !important;
+    max-width: 280px !important;
+    min-height: 44px !important;
+    padding: 0.75rem 1.4rem !important;
+  }
+}
+
+/* =========================
+   Mobile Ending Body ON/OFF
+========================= */
+
+@media (max-width: 900px) and (orientation: portrait) {
+  .choice-box.fake-replay-mode.ending-tool-mode {
+    gap: 8px !important;
+  }
+
+  .choice-box.fake-replay-mode.ending-tool-mode .choice-button {
+    min-width: 210px !important;
+    max-width: 290px !important;
+  }
+}
+
+/* =========================
+   Mobile TRUE END Body ON/OFF
+========================= */
+
+@media (max-width: 900px) and (orientation: portrait) {
+  .choice-box.ending-body-tool-mode {
+    gap: 10px !important;
+  }
+}
