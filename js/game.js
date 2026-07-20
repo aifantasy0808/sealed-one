@@ -1103,12 +1103,18 @@ function openNameInputPanel() {
     ignoreNameInputOutsideClose = false;
   }, 120);
 }
-
 function closeNameInputPanel({ clearPending = false } = {}) {
   inputPanel.classList.add("hidden");
   inputPanel.classList.remove("input-shake");
   inputPanel.classList.remove("input-blue");
   nameInput.classList.remove("input-shake");
+
+  /*
+    blur 이벤트가 실행되기 전에 닫힌 상태로 변경한다.
+    아이폰에서 viewport 복구 함수가 두 번 실행되는 것을 방지한다.
+  */
+  isNameInputOpen = false;
+  ignoreNameInputOutsideClose = false;
 
   nameInput.value = "";
   nameInput.blur();
@@ -1119,14 +1125,16 @@ function closeNameInputPanel({ clearPending = false } = {}) {
     pendingInputChoice = null;
   }
 
-  isNameInputOpen = false;
-  ignoreNameInputOutsideClose = false;
-
   if (hasStarted) {
     gameStage.classList.add("started");
   }
 
   syncMobileVisualViewport();
+
+  /*
+    프로그램으로 입력창을 닫은 경우에는
+    여기에서 한 번만 viewport를 복구한다.
+  */
   restoreMobileViewportAfterInput();
 }
 
@@ -1136,16 +1144,50 @@ function submitName() {
   const answer = normalizeAnswer(nameInput.value);
 
   if (isCorrectName(answer)) {
-    nameFailCount = 0;
+  nameFailCount = 0;
 
-    const choice = pendingInputChoice?.choice || { label: "이름을 말한다." };
-    const selectedIndex = pendingInputChoice?.selectedIndex ?? 1;
+  const choice =
+    pendingInputChoice?.choice ||
+    { label: "이름을 말한다." };
 
-    closeNameInputPanel({ clearPending: false });
+  const selectedIndex =
+    pendingInputChoice?.selectedIndex ?? 1;
 
-    goToScene("END_LILY", choice, selectedIndex);
+  closeNameInputPanel({ clearPending: false });
+
+  if (isMobilePortrait()) {
+    /*
+      아이폰 Safari는 키보드가 닫힌 직후에도
+      visualViewport가 잠시 키보드 상태로 남는다.
+
+      기존 최종 복구 시간이 520ms이므로,
+      복구가 끝난 뒤 TRUE END를 렌더링한다.
+    */
+    setTimeout(() => {
+      window.scrollTo(0, 0);
+      document.documentElement.scrollTop = 0;
+      document.body.scrollTop = 0;
+
+      syncMobileVisualViewport();
+
+      goToScene(
+        "END_LILY",
+        choice,
+        selectedIndex
+      );
+    }, 650);
+
     return;
   }
+
+  goToScene(
+    "END_LILY",
+    choice,
+    selectedIndex
+  );
+
+  return;
+}
 
   nameFailCount += 1;
   handleWrongName();
@@ -2407,7 +2449,17 @@ nameInput.addEventListener("focus", () => {
 
 nameInput.addEventListener("blur", () => {
   if (isMobilePortrait()) {
-    restoreMobileViewportAfterInput();
+    /*
+      입력 패널이 열려 있는 상태에서 사용자가 직접
+      키보드만 닫았을 때에만 viewport를 복구한다.
+
+      closeNameInputPanel()에서 프로그램으로 blur한 경우에는
+      isNameInputOpen이 이미 false라서 중복 실행되지 않는다.
+    */
+    if (isNameInputOpen) {
+      restoreMobileViewportAfterInput();
+    }
+
     return;
   }
 
