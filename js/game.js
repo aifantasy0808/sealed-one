@@ -334,7 +334,6 @@ function scheduleFloatingBackButtonPosition() {
 function scheduleMobileChoicePosition() {
   scheduleFloatingUiPositions();
 }
-
 function updateMobileChoicePosition() {
   if (!isMobilePortrait()) {
     gameStage.style.removeProperty("--mobile-choice-top");
@@ -343,94 +342,172 @@ function updateMobileChoicePosition() {
 
   if (!choiceBox || choiceBox.children.length === 0) return;
   if (!bodyBox || bodyBox.classList.contains("hidden")) return;
+
+  /*
+    가짜 엔딩과 TRUE END는 별도의 CSS 위치를 사용한다.
+  */
   if (choiceBox.classList.contains("fake-replay-mode")) return;
+  if (choiceBox.classList.contains("true-end-choice-mode")) return;
 
   const bodyRect = bodyBox.getBoundingClientRect();
 
-const gap = 26;
-const top = Math.round(bodyRect.bottom + gap);
+  const gap = 26;
+  const top = Math.round(bodyRect.bottom + gap);
 
   gameStage.style.setProperty(
     "--mobile-choice-top",
     `${top}px`
   );
 }
-
 function updateFloatingBackButtonPosition() {
   if (!hasStarted) return;
   if (!backBtn) return;
-    // 가짜 엔딩 오버레이가 떠 있을 때는 뒤로 버튼 숨김
+
+  /*
+    모바일 TRUE END에서는 bodyBox 좌표를 측정하지 않는다.
+    mobile.css에 설정한 고정 위치만 사용한다.
+  */
+  if (
+    currentSceneId === "END_LILY" &&
+    isMobilePortrait()
+  ) {
+    const isBodyVisible =
+      !bodyBox.classList.contains("hidden");
+
+    const isDialogueVisible =
+      !dialogueBox.classList.contains("hidden");
+
+    const isFakeOverlayVisible =
+      !fakeEndingOverlay.classList.contains("hidden");
+
+    const shouldHideBack =
+      endingBodyHidden ||
+      !isBodyVisible ||
+      isDialogueVisible ||
+      isFakeOverlayVisible;
+
+    if (shouldHideBack) {
+      backBtn.style.display = "none";
+    } else {
+      backBtn.style.removeProperty("display");
+    }
+
+    return;
+  }
+
+  /*
+    가짜 엔딩 오버레이가 떠 있을 때는 뒤로 버튼 숨김
+  */
   if (!fakeEndingOverlay.classList.contains("hidden")) {
     backBtn.style.display = "none";
     return;
   }
-  const isBodyVisible = !bodyBox.classList.contains("hidden");
-const isDialogueVisible = !dialogueBox.classList.contains("hidden");
 
-// 대사창이 떠 있을 때는 PC/모바일 모두 뒤로 버튼 숨김
-if (isDialogueVisible && !isBodyVisible) {
-  backBtn.style.display = "none";
-  return;
-}
+  const isBodyVisible =
+    !bodyBox.classList.contains("hidden");
 
-// 본문 설명란이 없으면 뒤로 버튼 숨김
-if (!isBodyVisible) {
-  backBtn.style.display = "none";
-  return;
-}
+  const isDialogueVisible =
+    !dialogueBox.classList.contains("hidden");
 
-// 본문 설명란이 보일 때만 뒤로 버튼 다시 표시
-backBtn.style.removeProperty("display");
+  /*
+    대사창만 표시될 때는 뒤로 버튼 숨김
+  */
+  if (isDialogueVisible && !isBodyVisible) {
+    backBtn.style.display = "none";
+    return;
+  }
 
-const targetBox = bodyBox;
+  /*
+    본문 설명란이 없으면 뒤로 버튼 숨김
+  */
+  if (!isBodyVisible) {
+    backBtn.style.display = "none";
+    return;
+  }
 
-  const rect = targetBox.getBoundingClientRect();
+  backBtn.style.removeProperty("display");
+
+  const rect = bodyBox.getBoundingClientRect();
   const buttonRect = backBtn.getBoundingClientRect();
 
-  const buttonWidth = buttonRect.width || 62;
-  const buttonHeight = buttonRect.height || 36;
+  const buttonWidth =
+    buttonRect.width || 62;
 
-  const sideGap = isMobilePortrait() ? 12 : 20;
-const bottomGap = isMobilePortrait() ? 12 : 16;
+  const buttonHeight =
+    buttonRect.height || 36;
 
-let left;
-let top;
+  const sideGap =
+    isMobilePortrait() ? 12 : 20;
 
-if (isMobilePortrait()) {
-  // 모바일은 설명란 오른쪽 하단
-  left = rect.right - buttonWidth - sideGap;
-  top = rect.bottom - buttonHeight - bottomGap;
-} else {
-  // PC는 설명란 위에 겹쳐서 오른쪽 하단에 배치
-  left = rect.right - buttonWidth - 16;
-  top = rect.bottom - buttonHeight - 28;
-}
+  const bottomGap =
+    isMobilePortrait() ? 12 : 16;
 
-  const screenGap = isMobilePortrait() ? 8 : 14;
+  let left;
+  let top;
 
-left = Math.max(
-  screenGap,
-  Math.min(window.innerWidth - buttonWidth - screenGap, left)
-);
+  if (isMobilePortrait()) {
+    left =
+      rect.right -
+      buttonWidth -
+      sideGap;
 
-/*
-  모바일에서는 설명란 자체가 화면 안에 고정되어 있으므로
-  Safari의 변동하는 innerHeight로 세로 위치를 다시 제한하지 않는다.
-*/
-if (!isMobilePortrait()) {
-  top = Math.max(
+    top =
+      rect.bottom -
+      buttonHeight -
+      bottomGap;
+  } else {
+    left =
+      rect.right -
+      buttonWidth -
+      16;
+
+    top =
+      rect.bottom -
+      buttonHeight -
+      28;
+  }
+
+  const screenGap =
+    isMobilePortrait() ? 8 : 14;
+
+  left = Math.max(
     screenGap,
-    Math.min(window.innerHeight - buttonHeight - screenGap, top)
+    Math.min(
+      window.innerWidth -
+        buttonWidth -
+        screenGap,
+      left
+    )
   );
-}
 
-  gameStage.style.setProperty("--floating-back-left", `${left}px`);
-  gameStage.style.setProperty("--floating-back-top", `${top}px`);
+  /*
+    모바일은 세로 좌표를 innerHeight로 다시 제한하지 않는다.
+  */
+  if (!isMobilePortrait()) {
+    top = Math.max(
+      screenGap,
+      Math.min(
+        window.innerHeight -
+          buttonHeight -
+          screenGap,
+        top
+      )
+    );
+  }
+
+  gameStage.style.setProperty(
+    "--floating-back-left",
+    `${left}px`
+  );
+
+  gameStage.style.setProperty(
+    "--floating-back-top",
+    `${top}px`
+  );
 }
 function hideSceneContent() {
   clearBodyTypingTimers();
   cancelFloatingUiSchedule();
-
   /* 이전 장면에서 계산한 모바일 UI 위치 초기화 */
   gameStage.style.removeProperty("--mobile-choice-top");
   gameStage.style.removeProperty("--floating-back-left");
@@ -441,10 +518,12 @@ function hideSceneContent() {
   bodyBox.classList.remove("fake-strike");
   bodyBox.innerHTML = "";
   bodyBox.scrollTop = 0;
-
 choiceBox.classList.remove("choice-ink-reveal");
 choiceBox.classList.remove("fake-replay-mode");
 choiceBox.classList.remove("ending-tool-mode");
+choiceBox.classList.remove("ending-body-tool-mode");
+choiceBox.classList.remove("true-end-choice-mode");
+
 clearFakeReplayPosition();
 choiceBox.innerHTML = "";
   dialogueBox.classList.add("hidden");
@@ -872,78 +951,123 @@ function renderChoices(scene) {
   choiceBox.classList.remove("fake-replay-mode");
   choiceBox.classList.remove("ending-tool-mode");
   choiceBox.classList.remove("ending-body-tool-mode");
+  choiceBox.classList.remove("true-end-choice-mode");
+
   clearFakeReplayPosition();
   choiceBox.innerHTML = "";
 
-  (scene.choices || []).forEach((choice, index) => {
-    const button = document.createElement("button");
-    button.className = "choice-button";
-    button.style.setProperty("--choice-delay", `${index * 180}ms`);
+  const isTrueEnd =
+    scene.id === "END_LILY";
 
-    const text = scene.id === "END_LILY"
-      ? choice.label
-      : `${index + 1}. ${choice.label}`;
+  /*
+    TRUE END도 기존 choiceBox를 그대로 사용한다.
 
-    button.innerHTML = `
-      <span class="choice-label">
-        ${createChoiceTextSpans(text, index)}
-      </span>
-    `;
+    모바일 TRUE END에서만 true-end-choice-mode를 붙여
+    JavaScript 좌표 계산 대신 CSS 고정 위치를 사용한다.
+  */
+  if (isTrueEnd) {
+    choiceBox.classList.add(
+      "ending-body-tool-mode"
+    );
 
-    if (choice.action === "disabled") {
-      button.classList.add("disabled");
-    }
-
-    button.addEventListener("click", () => {
-      unlockAudio();
-      handleChoice(choice, index);
-    });
-
-    choiceBox.appendChild(button);
-  });
-
-// TRUE END도 일반 엔딩 도구 선택지와 같은 구조 사용
-if (scene.id === "END_LILY") {
-  choiceBox.classList.add("fake-replay-mode");
-  choiceBox.classList.add("ending-tool-mode");
-
-  const restartButton =
-    choiceBox.querySelector(".choice-button");
-
-  if (restartButton) {
-    restartButton.classList.add("fake-replay-choice");
+    choiceBox.classList.add(
+      "true-end-choice-mode"
+    );
   }
 
-  const toggleBodyButton =
-    document.createElement("button");
+  (scene.choices || []).forEach(
+    (choice, index) => {
+      const button =
+        document.createElement("button");
 
-  toggleBodyButton.className =
-    "choice-button ending-body-toggle-choice";
+      button.className = "choice-button";
 
-  updateEndingBodyToggleButton(toggleBodyButton);
+      button.style.setProperty(
+        "--choice-delay",
+        `${index * 180}ms`
+      );
 
-  toggleBodyButton.addEventListener("click", () => {
-    unlockAudio();
-    toggleEndingBodyVisibility(toggleBodyButton);
-  });
+      const text = isTrueEnd
+        ? choice.label
+        : `${index + 1}. ${choice.label}`;
 
-  choiceBox.appendChild(toggleBodyButton);
+      button.innerHTML = `
+        <span class="choice-label">
+          ${createChoiceTextSpans(text, index)}
+        </span>
+      `;
+
+      if (choice.action === "disabled") {
+        button.classList.add("disabled");
+      }
+
+      button.addEventListener("click", () => {
+        unlockAudio();
+        handleChoice(choice, index);
+      });
+
+      choiceBox.appendChild(button);
+    }
+  );
+
+  /*
+    TRUE END에만 설명란 숨기기 버튼 추가
+  */
+  if (isTrueEnd) {
+    const toggleBodyButton =
+      document.createElement("button");
+
+    toggleBodyButton.className =
+      "choice-button ending-body-toggle-choice";
+
+    updateEndingBodyToggleButton(
+      toggleBodyButton
+    );
+
+    toggleBodyButton.addEventListener(
+      "click",
+      () => {
+        unlockAudio();
+
+        toggleEndingBodyVisibility(
+          toggleBodyButton
+        );
+      }
+    );
+
+    choiceBox.appendChild(
+      toggleBodyButton
+    );
+  }
+
+  if (choiceBox.children.length === 0) {
+    return;
+  }
 
   requestAnimationFrame(() => {
-    positionFakeReplayChoice();
-  });
-}
+    choiceBox.classList.add(
+      "choice-ink-reveal"
+    );
 
-  if (choiceBox.children.length > 0) {
-  requestAnimationFrame(() => {
-    choiceBox.classList.add("choice-ink-reveal");
+    /*
+      TRUE END에서는 설명란의 실시간 좌표를 측정하지 않는다.
+    */
+    if (!isTrueEnd) {
+      updateMobileChoicePosition();
+    }
 
-    updateMobileChoicePosition();
     updateFloatingBackButtonPosition();
   });
 
-  scheduleMobileChoicePosition();
-}
+  if (isTrueEnd) {
+    /*
+      뒤로 버튼의 표시 여부만 확인한다.
+      위치는 mobile.css에서 결정한다.
+    */
+    scheduleFloatingBackButtonPosition();
+  } else {
+    scheduleMobileChoicePosition();
+  }
 }
 
 function createChoiceTextSpans(text, choiceIndex) {
@@ -1137,57 +1261,66 @@ function closeNameInputPanel({ clearPending = false } = {}) {
   */
   restoreMobileViewportAfterInput();
 }
-
 function submitName() {
   unlockAudio();
 
   const answer = normalizeAnswer(nameInput.value);
 
   if (isCorrectName(answer)) {
-  nameFailCount = 0;
+    nameFailCount = 0;
 
-  const choice =
-    pendingInputChoice?.choice ||
-    { label: "이름을 말한다." };
+    const choice =
+      pendingInputChoice?.choice ||
+      { label: "이름을 말한다." };
 
-  const selectedIndex =
-    pendingInputChoice?.selectedIndex ?? 1;
+    const selectedIndex =
+      pendingInputChoice?.selectedIndex ?? 1;
 
-  closeNameInputPanel({ clearPending: false });
+    closeNameInputPanel({
+      clearPending: false
+    });
 
-  if (isMobilePortrait()) {
-    /*
-      아이폰 Safari는 키보드가 닫힌 직후에도
-      visualViewport가 잠시 키보드 상태로 남는다.
+    if (isMobilePortrait()) {
+      /*
+        입력창이 닫힌 뒤 TRUE END로 이동하기 전까지
+        기존 이름 장면의 선택지만 계속 숨긴다.
 
-      기존 최종 복구 시간이 520ms이므로,
-      복구가 끝난 뒤 TRUE END를 렌더링한다.
-    */
-    setTimeout(() => {
-      window.scrollTo(0, 0);
-      document.documentElement.scrollTop = 0;
-      document.body.scrollTop = 0;
-
-      syncMobileVisualViewport();
-
-      goToScene(
-        "END_LILY",
-        choice,
-        selectedIndex
+        기존 선택지 HTML은 삭제하지 않으므로
+        다른 화면에 영향을 주지 않는다.
+      */
+      gameStage.classList.add(
+        "is-typing-name"
       );
-    }, 650);
+
+      setTimeout(() => {
+        gameStage.classList.remove(
+          "is-typing-name"
+        );
+
+        window.scrollTo(0, 0);
+        document.documentElement.scrollTop = 0;
+        document.body.scrollTop = 0;
+
+        syncMobileVisualViewport();
+
+        goToScene(
+          "END_LILY",
+          choice,
+          selectedIndex
+        );
+      }, 650);
+
+      return;
+    }
+
+    goToScene(
+      "END_LILY",
+      choice,
+      selectedIndex
+    );
 
     return;
   }
-
-  goToScene(
-    "END_LILY",
-    choice,
-    selectedIndex
-  );
-
-  return;
-}
 
   nameFailCount += 1;
   handleWrongName();
@@ -2293,6 +2426,15 @@ function clearTitleUiRevealTimer() {
   }
 }
 
+function getTitleRevealElements() {
+  if (!titleScreen) return [];
+
+  return [
+    startGameBtn,
+    titleScreen.querySelector(".title-guide")
+  ].filter(Boolean);
+}
+
 function revealTitleUi() {
   clearTitleUiRevealTimer();
 
@@ -2300,6 +2442,37 @@ function revealTitleUi() {
   if (titleScreen.classList.contains("hidden")) return;
 
   titleScreen.classList.add("title-ui-ready");
+
+  /*
+    iPhone Safari 및 카카오톡 인앱 브라우저에서
+    CSS 클래스가 적용되지 않는 경우를 대비해
+    시작 버튼과 안내 문구를 인라인 스타일로도 표시한다.
+  */
+  getTitleRevealElements().forEach(element => {
+    element.style.setProperty(
+      "opacity",
+      "1",
+      "important"
+    );
+
+    element.style.setProperty(
+      "visibility",
+      "visible",
+      "important"
+    );
+
+    element.style.setProperty(
+      "pointer-events",
+      "auto",
+      "important"
+    );
+
+    element.style.setProperty(
+      "filter",
+      "none",
+      "important"
+    );
+  });
 }
 
 function armTitleUiReveal() {
@@ -2309,9 +2482,20 @@ function armTitleUiReveal() {
 
   titleScreen.classList.remove("title-ui-ready");
 
+  /*
+    처음 화면으로 돌아왔을 때는
+    이전에 넣은 강제 표시 스타일을 초기화한다.
+  */
+  getTitleRevealElements().forEach(element => {
+    element.style.removeProperty("opacity");
+    element.style.removeProperty("visibility");
+    element.style.removeProperty("pointer-events");
+    element.style.removeProperty("filter");
+  });
+
   titleUiRevealTimer = setTimeout(() => {
     revealTitleUi();
-  }, 9600);
+  }, 9200);
 }
 document.addEventListener("contextmenu", event => {
   event.preventDefault();
@@ -2404,15 +2588,32 @@ gameStage.addEventListener("click", event => {
 
   revealAllBodyChars();
 });
-titleScreen.addEventListener("pointerdown", event => {
+function handleTitleRevealInput() {
+  if (!titleScreen) return;
   if (titleScreen.classList.contains("hidden")) return;
   if (titleScreen.classList.contains("title-ui-ready")) return;
 
   revealTitleUi();
+}
 
-  event.preventDefault();
-  event.stopPropagation();
-});
+/*
+  Safari, 카카오톡 인앱 브라우저, 일반 브라우저를 모두 지원
+*/
+titleScreen.addEventListener(
+  "pointerdown",
+  handleTitleRevealInput
+);
+
+titleScreen.addEventListener(
+  "touchstart",
+  handleTitleRevealInput,
+  { passive: true }
+);
+
+titleScreen.addEventListener(
+  "click",
+  handleTitleRevealInput
+);
 startGameBtn.addEventListener("click", () => {
   clearTitleUiRevealTimer();
 
@@ -2483,6 +2684,8 @@ backBtn.addEventListener("click", () => {
   unlockAudio();
   goBack();
 });
+
+
 
 homeBtn.addEventListener("click", () => {
   unlockAudio();

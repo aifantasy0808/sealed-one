@@ -773,132 +773,282 @@ bottom: auto !important;
     width: 120% !important;
   }
 }
-
 /* =========================================================
-   iOS WebKit TRUE END 합성 레이어 강제 분리
-   - base.css의 음수 z-index를 확실하게 덮어씀
-   - 붓 / 글자 / 뒤로 버튼을 서로 다른 3D 레이어로 분리
+   Mobile TRUE END 고정 레이아웃
+   - 기존 bodyBox / choiceBox / backBtn 사용
+   - JavaScript 좌표 측정 사용 안 함
+   - Safari 키보드·주소창 변화에 영향받지 않도록 svh 사용
 ========================================================= */
 
-@supports (-webkit-touch-callout: none) {
-  @media (max-width: 900px) and (orientation: portrait) {
+@media (max-width: 900px) and (orientation: portrait) {
+  /*
+    TRUE END 공통 기준값
 
-    /*
-      iOS Safari가 하위 요소를 하나의 평면으로 합치지 않도록 함
-    */
-    #gameStage,
-    #gameStage .play-screen,
-    #gameStage .top-controls {
-      -webkit-transform-style: preserve-3d !important;
-      transform-style: preserve-3d !important;
-    }
+    작은 아이폰:
+    body top 약 210px
+    body height 약 220px
 
-    /*
-      설명란을 기준 레이어에 고정
-    */
-    #gameStage.pov-ending .body-box {
-      -webkit-transform: translateZ(0) !important;
-      transform: translateZ(0) !important;
+    큰 아이폰:
+    body top 최대 252px
+    body height 최대 300px
+  */
+  #gameStage.scene-end_lily {
+    --true-end-body-top:
+      calc(
+        env(safe-area-inset-top, 0px) +
+        clamp(210px, 29svh, 252px)
+      );
 
-      -webkit-backface-visibility: hidden !important;
-      backface-visibility: hidden !important;
-    }
+    --true-end-body-height:
+      clamp(220px, 34svh, 300px);
 
-    /*
-      TRUE END / 엔딩 도구 선택지를 설명란보다 앞쪽 레이어로 분리
-      기존 translateX(-50%)는 반드시 유지
-    */
-    #gameStage
-      .choice-box.fake-replay-mode.ending-tool-mode {
-      z-index: 980 !important;
-
-      -webkit-transform:
-        translateX(-50%)
-        translateZ(2px) !important;
-
-      transform:
-        translateX(-50%)
-        translateZ(2px) !important;
-
-      -webkit-transform-style: preserve-3d !important;
-      transform-style: preserve-3d !important;
-
-      -webkit-backface-visibility: hidden !important;
-      backface-visibility: hidden !important;
-
-      will-change: transform !important;
-    }
-
-    #gameStage
-      .choice-box.fake-replay-mode.ending-tool-mode
-      .choice-button,
-    #gameStage
-      .choice-box.fake-replay-mode.ending-tool-mode
-      .choice-label {
-      position: relative !important;
-
-      -webkit-transform-style: preserve-3d !important;
-      transform-style: preserve-3d !important;
-    }
-
-    /*
-      중요:
-      base.css의 z-index: -1 !important보다
-      구체적인 선택자로 z-index: 0을 적용
-    */
-    #gameStage
-      .choice-box.fake-replay-mode.ending-tool-mode
-      .choice-label::after {
-      z-index: 0 !important;
-
-      -webkit-transform:
-        translateY(-8%)
-        rotate(2deg)
-        scaleX(1)
-        translateZ(-1px) !important;
-
-      transform:
-        translateY(-8%)
-        rotate(2deg)
-        scaleX(1)
-        translateZ(-1px) !important;
-
-      -webkit-backface-visibility: hidden !important;
-      backface-visibility: hidden !important;
-    }
-
-    /*
-      글자는 붓보다 앞쪽에 고정
-    */
-    #gameStage
-      .choice-box.fake-replay-mode.ending-tool-mode
-      .choice-char {
-      position: relative !important;
-      z-index: 2 !important;
-
-      -webkit-transform: translateZ(1px) !important;
-      transform: translateZ(1px) !important;
-
-      -webkit-backface-visibility: hidden !important;
-      backface-visibility: hidden !important;
-    }
-
-    /*
-      뒤로 버튼은 설명란과 선택지보다 가장 앞쪽 레이어
-    */
-    #gameStage.started #backBtn {
-      z-index: 9999 !important;
-
-      -webkit-transform: translateZ(4px) !important;
-      transform: translateZ(4px) !important;
-
-      -webkit-transform-style: preserve-3d !important;
-      transform-style: preserve-3d !important;
-
-      -webkit-backface-visibility: hidden !important;
-      backface-visibility: hidden !important;
-
-      will-change: transform !important;
-    }
+    --true-end-choice-gap:
+      clamp(10px, 1.8svh, 16px);
   }
+
+  /* =========================
+     TRUE END 설명란
+  ========================= */
+
+  #gameStage.scene-end_lily .body-box {
+    position: fixed !important;
+
+    left: 44px !important;
+    top: var(--true-end-body-top) !important;
+
+    width: calc(100vw - 88px) !important;
+
+    height:
+      var(--true-end-body-height) !important;
+
+    min-height:
+      var(--true-end-body-height) !important;
+
+    max-height:
+      var(--true-end-body-height) !important;
+
+    margin: 0 !important;
+    transform: none !important;
+
+    overflow-x: hidden !important;
+    overflow-y: auto !important;
+
+    z-index: 700 !important;
+  }
+
+  #gameStage.scene-end_lily
+    .body-scroll-content {
+    /*
+      마지막 문장과 뒤로 버튼이 겹치지 않도록
+      아래쪽 여백 추가
+    */
+    padding:
+      22px
+      30px
+      58px !important;
+  }
+
+  /* =========================
+     TRUE END 선택지 상자
+  ========================= */
+
+  #gameStage.scene-end_lily
+    .choice-box.true-end-choice-mode {
+    position: fixed !important;
+
+    left: 50% !important;
+
+    top:
+      calc(
+        var(--true-end-body-top) +
+        var(--true-end-body-height) +
+        var(--true-end-choice-gap)
+      ) !important;
+
+    right: auto !important;
+    bottom: auto !important;
+
+    width: min(76vw, 310px) !important;
+    max-width: 310px !important;
+
+    transform:
+      translateX(-50%) !important;
+
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    justify-content: flex-start !important;
+
+    gap: 8px !important;
+
+    z-index: 900 !important;
+    pointer-events: auto !important;
+  }
+
+  /* =========================
+     TRUE END 선택지 버튼
+  ========================= */
+
+  #gameStage.scene-end_lily
+    .choice-box.true-end-choice-mode
+    .choice-button {
+    position: relative !important;
+
+    width: auto !important;
+    min-width: 210px !important;
+    max-width: 290px !important;
+
+    min-height: 3.4em !important;
+
+    padding:
+      0
+      1.5em
+      0.75em !important;
+
+    text-align: center !important;
+    white-space: nowrap !important;
+
+    overflow: visible !important;
+    isolation: isolate !important;
+
+    background: transparent !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  #gameStage.scene-end_lily
+    .choice-box.true-end-choice-mode
+    .choice-label {
+    position: relative !important;
+    z-index: 1 !important;
+
+    display: inline-block !important;
+
+    width: auto !important;
+    max-width: none !important;
+
+    padding:
+      0
+      1.05em
+      0.78em !important;
+
+    margin: 0 !important;
+
+    text-align: center !important;
+    white-space: nowrap !important;
+
+    isolation: isolate !important;
+    overflow: visible !important;
+  }
+
+  /* =========================
+     TRUE END 붓 이미지
+     - 음수 z-index 금지
+  ========================= */
+
+  #gameStage.scene-end_lily
+    .choice-box.true-end-choice-mode
+    .choice-label::after {
+    content: "" !important;
+    display: block !important;
+
+    position: absolute !important;
+
+    left: 1% !important;
+    bottom: 8% !important;
+
+    width: 105% !important;
+    height: 120% !important;
+
+    background-image:
+      url("../assets/choice-brush.png") !important;
+
+    background-repeat:
+      no-repeat !important;
+
+    background-position:
+      center bottom !important;
+
+    background-size:
+      100% 100% !important;
+
+    pointer-events: none !important;
+
+    /*
+      붓은 0, 텍스트는 2
+      음수 z-index를 사용하지 않는다.
+    */
+    z-index: 0 !important;
+
+filter: none !important;
+
+-webkit-transform-style: flat !important;
+transform-style: flat !important;
+
+transform:
+  translateY(-8%)
+  rotate(2deg)
+  scaleX(1) !important;
+
+    transform-origin:
+      left center !important;
+
+    -webkit-backface-visibility:
+      visible !important;
+
+    backface-visibility:
+      visible !important;
+  }
+
+  /* =========================
+     TRUE END 선택지 글자
+  ========================= */
+
+  #gameStage.scene-end_lily
+    .choice-box.true-end-choice-mode
+    .choice-char {
+    position: relative !important;
+    z-index: 2 !important;
+
+    display: inline-block !important;
+
+    filter: none !important;
+    transform: none !important;
+
+    will-change: auto !important;
+  }
+
+  /* =========================
+     TRUE END 뒤로 버튼
+     - 설명란 오른쪽 아래에 고정
+  ========================= */
+
+  #gameStage.scene-end_lily.started
+    #backBtn {
+    position: fixed !important;
+
+    left: auto !important;
+    right: 56px !important;
+
+    top:
+      calc(
+        var(--true-end-body-top) +
+        var(--true-end-body-height) -
+        46px
+      ) !important;
+
+    bottom: auto !important;
+
+    transform: none !important;
+
+    z-index: 920 !important;
+    pointer-events: auto !important;
+  }
+
+  /*
+    설명란 숨김 상태에서는 뒤로 버튼도 숨긴다.
+  */
+#gameStage.scene-end_lily.ending-body-hidden #backBtn {
+  display: none !important;
+}
 }
