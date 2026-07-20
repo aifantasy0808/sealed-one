@@ -49,17 +49,17 @@
   }
 
   .top-controls {
-    position: fixed !important;
-    top: calc(var(--mobile-vv-offset-top, 0px) + env(safe-area-inset-top, 0px) + 18px) !important;
-    left: 34px !important;
-    right: 20px !important;
-    z-index: 5000 !important;
-    display: flex !important;
-    align-items: center !important;
-    justify-content: flex-start !important;
-    gap: 28px !important;
-    padding: 0 !important;
-  }
+  position: fixed !important;
+  top: calc(var(--mobile-vv-offset-top, 0px) + env(safe-area-inset-top, 0px) + 18px) !important;
+  left: 34px !important;
+  right: 20px !important;
+  z-index: 5000 !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  gap: 8px !important;
+  padding: 0 !important;
+}
 
   #gameStage.started .top-controls,
   #gameStage.is-typing-name .top-controls,
@@ -429,18 +429,46 @@ bottom: auto !important;
   top: var(--mobile-choice-top, 68%) !important;
   bottom: auto !important;
 }
-  /* TRUE END 다시 하기 버튼 가운데 정렬 */
-  .game-stage.scene-end_lily .choice-button {
-    text-align: center !important;
-    padding-left: 0 !important;
-    padding-right: 0 !important;
-  }
+  /* TRUE END 모바일 선택지 전용 */
+.game-stage.scene-end_lily
+  .choice-box.ending-body-tool-mode {
+  width: auto !important;
+  max-width: 290px !important;
+  align-items: center !important;
+  gap: 6px !important;
+}
 
-  .game-stage.scene-end_lily .choice-label {
-    display: block !important;
-    width: 100% !important;
-    text-align: center !important;
-  }
+.game-stage.scene-end_lily
+  .choice-box.ending-body-tool-mode
+  .choice-button {
+  width: auto !important;
+  min-width: 210px !important;
+  max-width: 290px !important;
+
+  padding-left: 0 !important;
+  padding-right: 0 !important;
+
+  text-align: center !important;
+}
+
+.game-stage.scene-end_lily
+  .choice-box.ending-body-tool-mode
+  .choice-label {
+  display: inline-block !important;
+  width: auto !important;
+
+  padding-left: 0.8em !important;
+  padding-right: 0.8em !important;
+
+  text-align: center !important;
+}
+
+.game-stage.scene-end_lily
+  .choice-box.ending-body-tool-mode
+  .choice-label::after {
+  left: -8% !important;
+  width: 116% !important;
+}
 
   .fake-ending-overlay {
     z-index: 980 !important;
