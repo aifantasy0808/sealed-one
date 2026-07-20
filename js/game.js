@@ -356,8 +356,8 @@ let left;
 let top;
 
 if (isMobilePortrait()) {
-  // 모바일은 왼쪽 유지
-  left = rect.left + sideGap;
+  // 모바일은 설명란 오른쪽 하단
+  left = rect.right - buttonWidth - sideGap;
   top = rect.bottom - buttonHeight - bottomGap;
 } else {
   // PC는 설명란 위에 겹쳐서 오른쪽 하단에 배치

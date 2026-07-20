@@ -804,3 +804,26 @@ bottom: auto !important;
     bottom: auto !important;
   }
 }
+
+/* =========================
+   SIN02 태초 모바일 선택지 전용
+   - 짧은 본문 때문에 선택지가 너무 위로 올라가는 것 방지
+   - 짧은 선택지에 맞춰 붓 크기 별도 보정
+========================= */
+
+@media (max-width: 900px) and (orientation: portrait) {
+  /* 위치는 다른 일반 장면과 비슷한 높이로 맞춤 */
+  .game-stage.scene-sin02
+    .choice-box:not(.fake-replay-mode):not(.ending-body-tool-mode) {
+    top: max(var(--mobile-choice-top, 68%), 66dvh) !important;
+    bottom: auto !important;
+  }
+
+  /* 하얀색 / 검은색처럼 짧은 글자에만 붓 크기 보정 */
+  .game-stage.scene-sin02
+    .choice-box:not(.fake-replay-mode):not(.ending-body-tool-mode)
+    .choice-label::after {
+    left: 2% !important;
+    width: 120% !important;
+  }
+}
