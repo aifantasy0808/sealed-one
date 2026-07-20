@@ -275,7 +275,46 @@ function scheduleFloatingBackButtonPosition() {
 
   setTimeout(updateFloatingBackButtonPosition, 120);
 }
+function updateMobileChoicePosition() {
+  if (!isMobilePortrait()) {
+    gameStage.style.removeProperty("--mobile-choice-top");
+    return;
+  }
 
+  if (!choiceBox || choiceBox.children.length === 0) return;
+  if (!bodyBox || bodyBox.classList.contains("hidden")) return;
+  if (choiceBox.classList.contains("fake-replay-mode")) return;
+
+  const bodyRect = bodyBox.getBoundingClientRect();
+  const choiceRect = choiceBox.getBoundingClientRect();
+
+  /* 설명란과 선택지 사이 간격 */
+  const gap = 22;
+
+  /* 화면 아래 안전 여백 */
+  const bottomSafeArea = 42;
+
+  let top = bodyRect.bottom + gap;
+
+  const maxTop =
+    window.innerHeight -
+    choiceRect.height -
+    bottomSafeArea;
+
+  top = Math.min(top, maxTop);
+  top = Math.max(bodyRect.bottom + 12, top);
+
+  gameStage.style.setProperty(
+    "--mobile-choice-top",
+    `${top}px`
+  );
+}
+
+function scheduleMobileChoicePosition() {
+  requestAnimationFrame(updateMobileChoicePosition);
+  setTimeout(updateMobileChoicePosition, 80);
+  setTimeout(updateMobileChoicePosition, 220);
+}
 function updateFloatingBackButtonPosition() {
   if (!hasStarted) return;
   if (!backBtn) return;
@@ -831,11 +870,15 @@ function renderChoices(scene) {
   }
 
   if (choiceBox.children.length > 0) {
-    requestAnimationFrame(() => {
-      choiceBox.classList.add("choice-ink-reveal");
-      updateFloatingBackButtonPosition();
-    });
-  }
+  requestAnimationFrame(() => {
+    choiceBox.classList.add("choice-ink-reveal");
+
+    updateMobileChoicePosition();
+    updateFloatingBackButtonPosition();
+  });
+
+  scheduleMobileChoicePosition();
+}
 }
 
 function createChoiceTextSpans(text, choiceIndex) {
@@ -1288,7 +1331,7 @@ function positionFakeReplayChoice() {
 
   const rect = bodyBox.getBoundingClientRect();
 
-  const gap = isMobilePortrait() ? 18 : 22;
+  const gap = isMobilePortrait() ? 28 : 22;
   const bottomRoom = isMobilePortrait() ? 120 : 96;
 
   const viewportHeight = window.innerHeight;
@@ -2161,7 +2204,7 @@ function armTitleUiReveal() {
 
   titleUiRevealTimer = setTimeout(() => {
     revealTitleUi();
-  }, 9100);
+  }, 9500);
 }
 document.addEventListener("contextmenu", event => {
   event.preventDefault();
@@ -2691,6 +2734,7 @@ function setupBodyDragScroll() {
 }
 function refreshFloatingUiPositions() {
   scheduleFloatingBackButtonPosition();
+  scheduleMobileChoicePosition();
   positionFakeReplayChoice();
 }
 

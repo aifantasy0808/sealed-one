@@ -165,8 +165,8 @@
     transform: translateX(-50%) !important;
 
     /* 숫자가 커질수록 위로 올라감 */
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 17%) !important;
-
+    top: var(--mobile-choice-top, 68%) !important;
+bottom: auto !important;
     z-index: 760 !important;
     max-width: none !important;
 
@@ -425,10 +425,10 @@
     padding: 22px 30px 52px !important;
   }
 
-  .pov-ending .choice-box {
-    bottom: calc(env(safe-area-inset-bottom, 0px) + 100px) !important;
-  }
-
+.pov-ending .choice-box:not(.fake-replay-mode) {
+  top: var(--mobile-choice-top, 68%) !important;
+  bottom: auto !important;
+}
   /* TRUE END 다시 하기 버튼 가운데 정렬 */
   .game-stage.scene-end_lily .choice-button {
     text-align: center !important;
@@ -630,5 +630,47 @@
     .choice-label::after {
     left: 2% !important;
     width: 120% !important;
+  }
+}
+/* =========================
+   모바일 선택지 글자 흐림 오류 방지
+   - iOS Safari의 filter 잔상 제거
+   - 투명도 + 이동으로만 등장
+========================= */
+
+@media (max-width: 900px) and (orientation: portrait) {
+  .choice-char {
+    filter: none !important;
+  }
+
+  .choice-box.choice-ink-reveal .choice-char {
+    animation-name: choiceCharRevealMobile !important;
+  }
+}
+
+@keyframes choiceCharRevealMobile {
+  0% {
+    opacity: 0;
+    filter: none;
+    transform: translateY(0.18em);
+  }
+
+  65% {
+    opacity: var(--choice-char-opacity, 0.9);
+    filter: none;
+    transform: translateY(-0.04em);
+  }
+
+  100% {
+    opacity: 1;
+    filter: none;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 900px) and (orientation: portrait) {
+  .choice-box.ending-body-tool-mode:not(.fake-replay-mode) {
+    top: var(--mobile-choice-top, 68%) !important;
+    bottom: auto !important;
   }
 }
