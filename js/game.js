@@ -2204,7 +2204,7 @@ function armTitleUiReveal() {
 
   titleUiRevealTimer = setTimeout(() => {
     revealTitleUi();
-  }, 9500);
+  }, 9600);
 }
 document.addEventListener("contextmenu", event => {
   event.preventDefault();

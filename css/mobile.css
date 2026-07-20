@@ -633,37 +633,114 @@ bottom: auto !important;
   }
 }
 /* =========================
-   모바일 선택지 글자 흐림 오류 방지
-   - iOS Safari의 filter 잔상 제거
-   - 투명도 + 이동으로만 등장
+   iPhone Safari 선택지 레이어 오류 방지
+   - 음수 z-index 대신 0 / 2 레이어 사용
+   - 글자별 blur 합성 제거
+   - 선택지 전체 단위로 자연스럽게 등장
 ========================= */
 
 @media (max-width: 900px) and (orientation: portrait) {
-  .choice-char {
+  /*
+    choice-label 자체가 붓과 글자의 기준 레이어가 됨
+  */
+  .choice-label {
+    position: relative !important;
+    z-index: 1 !important;
+    isolation: isolate !important;
+
+    opacity: 0 !important;
     filter: none !important;
+    transform: translateY(0.18em) !important;
+
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
   }
 
-  .choice-box.choice-ink-reveal .choice-char {
-    animation-name: choiceCharRevealMobile !important;
+  /*
+    글자는 붓보다 앞으로
+    아이폰에서 깨지는 글자별 filter/transform 제거
+  */
+  .choice-char {
+    position: relative !important;
+    z-index: 2 !important;
+
+    display: inline-block !important;
+    opacity: 1 !important;
+    visibility: visible !important;
+
+    filter: none !important;
+    transform: none !important;
+    animation: none !important;
+    will-change: auto !important;
+
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+  }
+
+  /*
+    붓 이미지는 음수 z-index를 쓰지 않고 0으로 배치
+  */
+  .choice-label::after {
+    z-index: 0 !important;
+    filter: none !important;
+
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+
+    /*
+      별도 합성 레이어를 안정적으로 생성
+      뒤로 보내는 -5px가 아니라 같은 평면의 0 사용
+    */
+    -webkit-transform-style: preserve-3d !important;
+    transform-style: preserve-3d !important;
+  }
+
+  /* 첫 번째 선택지 */
+  .choice-box.choice-ink-reveal
+    .choice-button:nth-child(1)
+    .choice-label {
+    animation: mobileChoiceLabelReveal 0.58s
+      cubic-bezier(0.16, 1, 0.3, 1) 80ms forwards !important;
+  }
+
+  /* 두 번째 선택지 */
+  .choice-box.choice-ink-reveal
+    .choice-button:nth-child(2)
+    .choice-label {
+    animation: mobileChoiceLabelReveal 0.58s
+      cubic-bezier(0.16, 1, 0.3, 1) 460ms forwards !important;
+  }
+
+  /* 세 번째 선택지 */
+  .choice-box.choice-ink-reveal
+    .choice-button:nth-child(3)
+    .choice-label {
+    animation: mobileChoiceLabelReveal 0.58s
+      cubic-bezier(0.16, 1, 0.3, 1) 840ms forwards !important;
+  }
+
+  /* 네 번째 선택지 */
+  .choice-box.choice-ink-reveal
+    .choice-button:nth-child(4)
+    .choice-label {
+    animation: mobileChoiceLabelReveal 0.58s
+      cubic-bezier(0.16, 1, 0.3, 1) 1220ms forwards !important;
   }
 }
 
-@keyframes choiceCharRevealMobile {
+@keyframes mobileChoiceLabelReveal {
   0% {
     opacity: 0;
-    filter: none;
     transform: translateY(0.18em);
   }
 
-  65% {
-    opacity: var(--choice-char-opacity, 0.9);
-    filter: none;
-    transform: translateY(-0.04em);
+  60% {
+    opacity: 0.9;
+    transform: translateY(-0.03em);
   }
 
   100% {
     opacity: 1;
-    filter: none;
     transform: translateY(0);
   }
 }
