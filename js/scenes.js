@@ -149,7 +149,7 @@ const SCENES = {
   SIN04_1: {
     id: "SIN04_1",
     type: "scene",
-    pov: "record",
+    pov: "lily",
     title: "두려움",
     body: [
       "생명은 그녀의 힘으로 피어났다.",
@@ -214,7 +214,7 @@ const SCENES = {
   SIN05_1: {
     id: "SIN05_1",
     type: "scene",
-    pov: "record",
+    pov: "lily",
     title: "회수",
     body: [
       "그녀는 학살이라 부르지 않았다.",
@@ -392,7 +392,7 @@ const SCENES = {
     ],
     fakeWord: "거짓말.",
     speaker: "그녀",
-    dialogue: "그들은 돌아오지 않았다.\n그들은 나를 따르지 않았다.\n\n의지 같은 걸 주는 게 아니었어.\n\n처음부터, 내 뜻대로 만들었어야 했어.",
+    dialogue: "그들은 돌아오지 않았다.\n그들은 나를 따르지 않았다.\n\n의지 같은 걸 주는 게 아니었어.\n처음부터, 내 뜻대로 만들었어야 했어.",
     choices: [],
     videoSrc: "videos/end01.mp4",
     bgmSrc: "audio/end01.mp3"
@@ -422,7 +422,7 @@ const SCENES = {
       "",
       "그녀는 그것을 배신이라 불렀다."
     ],
-    fakeWord: "후회.",
+    fakeWord: "배신.",
     skipFakeStrike: true,
     speaker: "그녀",
     dialogue: "의지를 주지 않았다면,\n그들은 나를 떠나지 않았겠지.\n\n자유라니.\n참 우스운 말이야.",
@@ -450,7 +450,7 @@ const SCENES = {
       "그녀는 조용히",
       "자신의 끝을 기다렸다."
     ],
-    fakeWord: "거짓말.",
+    fakeWord: "부정.",
     speaker: "그녀",
     dialogue: "내가 왜 끝을 받아들여야 하지?\n\n내가 만든 것들도 살아가는데,\n어째서 내가 사라져야 하는 거지?",
     choices: [],
@@ -486,7 +486,7 @@ const SCENES = {
     ],
     fakeWord: "가짜.",
     speaker: "그녀",
-    dialogue: "재밌나? 내가 패배하는 환상을 그렇게 보고 싶었나?\n\n이건 내가 겪은 끝이 아니야.",
+    dialogue: "재밌나? 내가 패배하는 환상을\n 그렇게 보고 싶었나?\n\n이건 내가 겪은 끝이 아니야.",
     choices: [],
     videoSrc: "videos/end05.mp4",
     bgmSrc: "audio/end05.mp3"
@@ -521,7 +521,7 @@ const SCENES = {
       "마치 지상의 존재들을",
       "내려다보는 것 같았으니."
     ],
-    fakeWord: "거짓말.",
+    fakeWord: "거짓.",
     speaker: "그녀",
     dialogue: "반고는 천궁을 싫어했다.\n아무것도 없는 공간이라며 답답해했지.\n\n그런 놈이 스스로 천궁에 올랐다고?\n성의 없는 환상이야.",
     choices: [],
@@ -565,7 +565,7 @@ const SCENES = {
     afterEndingDelay: 900,
     skipFakeStrike: true,
 
-    fakeWord: "검은 점.",
+    fakeWord: "안개.",
     fakeSpeaker: "기록",
     fakeDialogue: "그녀는 안개 속에 갇혔다.\n그녀는 더 이상 진실을 눈치채지 못할 것이다.",
 

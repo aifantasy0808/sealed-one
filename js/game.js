@@ -14,6 +14,7 @@ let audioUnlocked = false;
 let activeBgmSrc = "";
 let hasStarted = false;
 let fakeTimers = [];
+let titleUiRevealTimer = null;
 let bodyRevealDone = false;
 let fakeSequenceStarted = false;
 let activeFakeSceneId = null;
@@ -231,6 +232,8 @@ applyScenePcVideoPosition(TITLE_SCREEN);
 
     titleScreen.classList.remove("hidden");
     playScreen.classList.add("hidden");
+
+    armTitleUiReveal();
 
     syncMobileVisualViewport();
     return;
@@ -2133,7 +2136,33 @@ function handleNameInputBlockedClick(event) {
 
   stopNameCloseEvent(event);
 }
+function clearTitleUiRevealTimer() {
+  if (titleUiRevealTimer) {
+    clearTimeout(titleUiRevealTimer);
+    titleUiRevealTimer = null;
+  }
+}
 
+function revealTitleUi() {
+  clearTitleUiRevealTimer();
+
+  if (!titleScreen) return;
+  if (titleScreen.classList.contains("hidden")) return;
+
+  titleScreen.classList.add("title-ui-ready");
+}
+
+function armTitleUiReveal() {
+  clearTitleUiRevealTimer();
+
+  if (!titleScreen) return;
+
+  titleScreen.classList.remove("title-ui-ready");
+
+  titleUiRevealTimer = setTimeout(() => {
+    revealTitleUi();
+  }, 9100);
+}
 document.addEventListener("contextmenu", event => {
   event.preventDefault();
 });
@@ -2225,8 +2254,18 @@ gameStage.addEventListener("click", event => {
 
   revealAllBodyChars();
 });
+titleScreen.addEventListener("pointerdown", event => {
+  if (titleScreen.classList.contains("hidden")) return;
+  if (titleScreen.classList.contains("title-ui-ready")) return;
 
+  revealTitleUi();
+
+  event.preventDefault();
+  event.stopPropagation();
+});
 startGameBtn.addEventListener("click", () => {
+  clearTitleUiRevealTimer();
+
   hasStarted = true;
   renderScene();
   unlockAudio();

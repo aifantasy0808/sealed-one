@@ -304,10 +304,10 @@ button {
 .body-box {
   position: absolute;
   left: 50%;
-  top: 48%;
+  top: 44%;
   z-index: 100;
   width: min(62vw, 980px);
-  max-height: 46vh;
+  max-height: 38vh;
   transform: translate(-50%, -50%);
   overflow-y: auto;
   overflow-x: hidden;
@@ -360,7 +360,7 @@ button {
 
 .pov-ending .body-box {
   width: min(680px, 54vw);
-  max-height: 48vh;
+  max-height: 38vh;
   background:
     radial-gradient(
       ellipse at 50% 48%,
@@ -427,78 +427,69 @@ button {
   text-decoration-thickness: 2px !important;
   text-decoration-skip-ink: none !important;
 }
-
 /* =========================
    Choices
+   - 선택지 배경 제거
+   - 붓이 지나가면서 글자가 한 글자씩 등장
+   - 위치/크기는 글자 길이에 따라 %/em 기준으로 반응
 ========================= */
 
 .choice-box {
   position: absolute;
   left: 50%;
-  bottom: 96px;
+  bottom: 7.5%;
   z-index: 180;
+
   width: min(72vw, 1060px);
   transform: translateX(-50%);
+
   display: flex;
   flex-direction: column;
-  gap: 16px;
+  gap: clamp(0.85rem, 1.2vw, 1.25rem);
+
   visibility: visible;
   opacity: 1;
   pointer-events: auto;
 }
 
 .choice-button {
-  position: relative;
-  width: 100%;
-  min-height: 64px;
-  padding: 0 68px;
-  border: none;
-  border-radius: 999px;
-  background:
-    radial-gradient(
-      ellipse at 50% 50%,
-      rgba(0, 0, 0, 0.98),
-      rgba(0, 0, 0, 0.84) 62%,
-      rgba(0, 0, 0, 0.38) 78%,
-      transparent 100%
-    );
-  color: rgba(255, 247, 238, 0.96);
+  position: relative !important;
+  width: 100% !important;
+
+  min-height: 3.8em !important;
+  padding: 0 6.5% 0.9em !important;
+
+  overflow: visible !important;
+  isolation: isolate !important;
+
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+
+  color: rgba(255, 247, 238, 0.96) !important;
   font-size: clamp(1.12rem, 1.22vw, 1.45rem);
   line-height: 1.45;
   text-align: left;
   letter-spacing: 0.04em;
+
   text-shadow:
-    0 2px 8px rgba(0, 0, 0, 0.95),
-    0 0 8px rgba(255, 255, 255, 0.2);
-  opacity: 1 !important;
+    0 0.12em 0.45em rgba(0, 0, 0, 0.95),
+    0 0 0.45em rgba(255, 255, 255, 0.28) !important;
+
   visibility: visible !important;
   pointer-events: auto !important;
-  overflow: visible;
 }
 
 .choice-button::before,
 .choice-button::after {
   content: none !important;
-}
-
-.choice-label {
-  position: relative;
-  z-index: 2;
-  display: inline-block;
-  opacity: 1 !important;
-  visibility: visible !important;
-}
-
-.choice-char {
-  display: inline;
-  opacity: 1 !important;
-  visibility: visible !important;
-  filter: none !important;
-  transform: none !important;
-  animation: none !important;
+  display: none !important;
 }
 
 .choice-button:hover {
+  background: transparent !important;
+  box-shadow: none !important;
   filter: brightness(1.12);
 }
 
@@ -507,8 +498,153 @@ button {
   cursor: not-allowed;
 }
 
+.choice-label {
+  position: relative !important;
+  z-index: 2 !important;
+
+  display: inline-block !important;
+
+  /*
+    글자 길이 기준으로 붓이 따라가게 하는 여백
+    px 대신 em 사용
+  */
+  padding: 0 1.35em 0.95em !important;
+
+  isolation: isolate !important;
+  overflow: visible !important;
+
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+/* 선택지 글자 기본 상태: 숨김 */
+.choice-char {
+  display: inline-block !important;
+  opacity: 0;
+  visibility: visible !important;
+
+  filter: blur(var(--choice-char-blur, 0.18em));
+  transform: translateY(var(--choice-char-y, 0.22em));
+
+  animation: none;
+}
+
+/* 선택지가 등장할 때 글자가 한 글자씩 나타남 */
+.choice-box.choice-ink-reveal .choice-button:nth-child(1) .choice-char {
+  animation: choiceCharReveal 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--choice-char-delay, 0ms) + 80ms);
+}
+
+.choice-box.choice-ink-reveal .choice-button:nth-child(2) .choice-char {
+  animation: choiceCharReveal 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--choice-char-delay, 0ms) + 460ms);
+}
+
+.choice-box.choice-ink-reveal .choice-button:nth-child(3) .choice-char {
+  animation: choiceCharReveal 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--choice-char-delay, 0ms) + 840ms);
+}
+
+.choice-box.choice-ink-reveal .choice-button:nth-child(4) .choice-char {
+  animation: choiceCharReveal 0.48s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: calc(var(--choice-char-delay, 0ms) + 1220ms);
+}
+
+/* 일반 선택지에만 붓 밑줄 적용 */
+.choice-box:not(.fake-replay-mode):not(.ending-body-tool-mode) .choice-label::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+
+  /*
+    전부 choice-label 기준 %
+    선택지 글자 길이에 따라 자동 조절
+  */
+  left: -5% !important;
+  bottom: 10% !important;
+
+  width: 130% !important;
+  height: 120% !important;
+
+  background-image: url("../assets/choice-brush.png") !important;
+  background-repeat: no-repeat !important;
+  background-position: center bottom !important;
+  background-size: 100% 100% !important;
+
+  pointer-events: none !important;
+  z-index: -1 !important;
+
+  transform: translateY(-12%) rotate(2deg) scaleX(1);
+  transform-origin: left center !important;
+
+  clip-path: inset(0 100% 0 0);
+}
+
+/* 붓도 선택지 순서대로 그어짐 */
+.choice-box.choice-ink-reveal:not(.fake-replay-mode):not(.ending-body-tool-mode)
+  .choice-button:nth-child(1)
+  .choice-label::after {
+  animation: choiceBrushDraw 0.72s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 80ms;
+}
+
+.choice-box.choice-ink-reveal:not(.fake-replay-mode):not(.ending-body-tool-mode)
+  .choice-button:nth-child(2)
+  .choice-label::after {
+  animation: choiceBrushDraw 0.72s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 460ms;
+}
+
+.choice-box.choice-ink-reveal:not(.fake-replay-mode):not(.ending-body-tool-mode)
+  .choice-button:nth-child(3)
+  .choice-label::after {
+  animation: choiceBrushDraw 0.72s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 840ms;
+}
+
+.choice-box.choice-ink-reveal:not(.fake-replay-mode):not(.ending-body-tool-mode)
+  .choice-button:nth-child(4)
+  .choice-label::after {
+  animation: choiceBrushDraw 0.72s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 1220ms;
+}
+
 .game-stage.is-typing-name .choice-box {
   display: none !important;
+}
+
+@keyframes choiceCharReveal {
+  0% {
+    opacity: 0;
+    filter: blur(var(--choice-char-blur, 0.18em));
+    transform: translateY(var(--choice-char-y, 0.22em));
+  }
+
+  65% {
+    opacity: var(--choice-char-opacity, 0.9);
+    filter: blur(0.06em);
+    transform: translateY(-0.04em);
+  }
+
+  100% {
+    opacity: var(--choice-char-opacity, 1);
+    filter: blur(0);
+    transform: translateY(0);
+  }
+}
+
+@keyframes choiceBrushDraw {
+  0% {
+    clip-path: inset(0 100% 0 0);
+    filter: blur(0.12em);
+    transform: translateY(-12%) rotate(2deg) scaleX(0.96);
+  }
+
+  100% {
+    clip-path: inset(0 0 0 0);
+    filter: blur(0);
+    transform: translateY(-12%) rotate(2deg) scaleX(1);
+  }
 }
 
 /* =========================
@@ -1135,6 +1271,8 @@ button {
 
 /* =========================
    Fake Ending Replay / Ending Tools
+   - 모든 엔딩 선택지에 붓 밑줄 적용
+   - 대사 다시 보기 / 설명란 숨기기 / 다시하기 통일
 ========================= */
 
 .choice-box.fake-replay-mode {
@@ -1146,25 +1284,157 @@ button {
   max-width: none !important;
   transform: translateX(-50%) !important;
   z-index: 780 !important;
+
   display: flex !important;
+  flex-direction: column !important;
   align-items: center !important;
   justify-content: center !important;
-  gap: 0 !important;
+  gap: clamp(0.9rem, 1.2vw, 1.25rem) !important;
 }
 
-.choice-box.fake-replay-mode .choice-button {
+.choice-box.fake-replay-mode.ending-tool-mode,
+.choice-box.ending-body-tool-mode {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: center !important;
+  gap: clamp(0.9rem, 1.2vw, 1.25rem) !important;
+}
+
+/* TRUE END는 화면 중앙 아래에 고정 */
+.choice-box.ending-body-tool-mode {
+  position: absolute !important;
+  left: 50% !important;
+  bottom: 12.5% !important;
+  transform: translateX(-50%) !important;
+
   width: auto !important;
-  min-width: 220px !important;
-  max-width: 320px !important;
-  min-height: 46px !important;
-  padding: 0.8rem 1.7rem !important;
-  text-align: center !important;
+  max-width: none !important;
+  z-index: 180 !important;
 }
 
-.choice-box.fake-replay-mode .choice-label {
-  display: block !important;
-  width: 100% !important;
+/* 모든 엔딩 도구 버튼 공통 */
+.choice-box.fake-replay-mode.ending-tool-mode .choice-button,
+.choice-box.ending-body-tool-mode .choice-button {
+  position: relative !important;
+
+  width: auto !important;
+  min-width: clamp(300px, 20vw, 480px) !important;
+  max-width: 480px !important;
+  min-height: 3.4em !important;
+
+  padding: 0 2.2em 0.85em !important;
+
+  background: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+
   text-align: center !important;
+  white-space: nowrap !important;
+
+  color: rgba(255, 247, 238, 0.96) !important;
+  text-shadow:
+    0 0.12em 0.45em rgba(0, 0, 0, 0.95),
+    0 0 0.45em rgba(255, 255, 255, 0.28) !important;
+
+  opacity: 1 !important;
+}
+
+/* 모든 엔딩 도구 텍스트 공통 */
+.choice-box.fake-replay-mode.ending-tool-mode .choice-label,
+.choice-box.ending-body-tool-mode .choice-label {
+  position: relative !important;
+  z-index: 2 !important;
+
+  display: inline-block !important;
+  width: auto !important;
+  max-width: none !important;
+
+  padding: 0 1.15em 0.82em !important;
+
+  text-align: center !important;
+  white-space: nowrap !important;
+
+  isolation: isolate !important;
+  overflow: visible !important;
+
+  opacity: 1 !important;
+}
+
+.choice-box.fake-replay-mode.ending-tool-mode .choice-char,
+.choice-box.ending-body-tool-mode .choice-char {
+  display: inline-block !important;
+  white-space: nowrap !important;
+}
+
+/* 모든 엔딩 도구 버튼 붓 밑줄 */
+.choice-box.fake-replay-mode.ending-tool-mode .choice-label::after,
+.choice-box.ending-body-tool-mode .choice-label::after {
+  content: "" !important;
+  display: block !important;
+  position: absolute !important;
+
+  left: 1% !important;
+  bottom: 10% !important;
+
+  width: 105% !important;
+  height: 120% !important;
+
+  background-image: url("../assets/choice-brush.png") !important;
+  background-repeat: no-repeat !important;
+  background-position: center bottom !important;
+  background-size: 100% 100% !important;
+
+  pointer-events: none !important;
+  z-index: -1 !important;
+
+  transform: translateY(-8%) rotate(2deg) scaleX(1);
+  transform-origin: left center !important;
+
+  clip-path: inset(0 100% 0 0);
+}
+
+/* 1번째 엔딩 선택지: 다시하기 / 대사 다시 보기 */
+.choice-box.choice-ink-reveal.fake-replay-mode.ending-tool-mode
+  .choice-button:nth-child(1)
+  .choice-label::after,
+.choice-box.choice-ink-reveal.ending-body-tool-mode
+  .choice-button:nth-child(1)
+  .choice-label::after {
+  animation: choiceBrushDrawEnding 0.72s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 80ms;
+}
+
+/* 2번째 엔딩 선택지: 설명란 숨기기 / 설명란 다시 보기 */
+.choice-box.choice-ink-reveal.fake-replay-mode.ending-tool-mode
+  .choice-button:nth-child(2)
+  .choice-label::after,
+.choice-box.choice-ink-reveal.ending-body-tool-mode
+  .choice-button:nth-child(2)
+  .choice-label::after {
+  animation: choiceBrushDrawEnding 0.72s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+  animation-delay: 460ms;
+}
+
+/* 흐리게 만들던 투명도 제거 */
+.choice-box.fake-replay-mode.ending-tool-mode .ending-body-toggle-choice,
+.choice-box.ending-body-tool-mode .ending-body-toggle-choice {
+  opacity: 1 !important;
+}
+
+@keyframes choiceBrushDrawEnding {
+  0% {
+    clip-path: inset(0 100% 0 0);
+    filter: blur(0.12em);
+    transform: translateY(-8%) rotate(2deg) scaleX(0.96);
+  }
+
+  100% {
+    clip-path: inset(0 0 0 0);
+    filter: blur(0);
+    transform: translateY(-8%) rotate(2deg) scaleX(1);
+  }
 }
 
 /* =========================
@@ -1181,9 +1451,6 @@ button {
   pointer-events: auto !important;
 }
 
-#gameStage.started #backBtn:disabled {
-  opacity: 0.42 !important;
-}
 
 /* =========================
    Ending Body ON/OFF
@@ -1193,45 +1460,6 @@ button {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
-}
-
-.choice-box.fake-replay-mode.ending-tool-mode {
-  flex-direction: column !important;
-  gap: 10px !important;
-}
-
-.choice-box.fake-replay-mode.ending-tool-mode .choice-button {
-  width: auto !important;
-  min-width: 220px !important;
-  max-width: 340px !important;
-  text-align: center !important;
-}
-
-.choice-box.fake-replay-mode.ending-tool-mode .ending-body-toggle-choice {
-  opacity: 0.88 !important;
-}
-
-/* =========================
-   TRUE END Body ON/OFF
-========================= */
-
-.choice-box.ending-body-tool-mode {
-  flex-direction: column !important;
-  gap: 12px !important;
-}
-
-.choice-box.ending-body-tool-mode .choice-button {
-  text-align: center !important;
-}
-
-.choice-box.ending-body-tool-mode .choice-label {
-  display: block !important;
-  width: 100% !important;
-  text-align: center !important;
-}
-
-.choice-box.ending-body-tool-mode .ending-body-toggle-choice {
-  opacity: 0.88 !important;
 }
 
 /* =========================
@@ -1278,30 +1506,69 @@ button {
   text-align: center !important;
 }
 
+
 /* =========================
-   전체 선택지 붓 번짐 배경 제거
-   - 일반 씬 / 엔딩 / 트루엔딩 전부 적용
+   시작 화면 제목 숨김
+   - 영상 안에 제목이 있을 때 사용
 ========================= */
 
-.choice-button {
-  background: transparent !important;
-  box-shadow: none !important;
-  border: none !important;
-  border-radius: 0 !important;
-  color: rgba(255, 247, 238, 0.96) !important;
-  text-shadow:
-    0 2px 6px rgba(0, 0, 0, 0.95),
-    0 0 8px rgba(255, 255, 255, 0.28) !important;
-}
-
-.choice-button:hover {
-  background: transparent !important;
-  box-shadow: none !important;
-  filter: brightness(1.12);
-}
-
-.choice-button::before,
-.choice-button::after {
-  content: none !important;
+#titleScreen .game-title,
+#titleScreen h1 {
   display: none !important;
+}
+
+/* =========================
+   시작 화면 버튼/주의문구 등장 연출
+   - 7초 후 등장
+   - 화면 클릭 시 즉시 등장
+========================= */
+
+#titleScreen {
+  justify-content: center !important;
+  --title-ui-y: 8vh;
+}
+
+#titleScreen .start-game-btn,
+#titleScreen .title-guide {
+  opacity: 0 !important;
+  visibility: hidden !important;
+  pointer-events: none !important;
+
+  transform: translateY(calc(var(--title-ui-y) + 1.4vh)) !important;
+  filter: blur(0.35em) !important;
+
+  transition:
+    opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0s linear 0.85s !important;
+}
+
+#titleScreen.title-ui-ready .start-game-btn,
+#titleScreen.title-ui-ready .title-guide {
+  opacity: 1 !important;
+  visibility: visible !important;
+  pointer-events: auto !important;
+
+  transform: translateY(var(--title-ui-y)) !important;
+  filter: blur(0) !important;
+
+  transition:
+    opacity 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    filter 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    transform 0.85s cubic-bezier(0.16, 1, 0.3, 1),
+    visibility 0s !important;
+}
+
+/* =========================
+   태초 장면 선택지 붓 위치 보정
+   - SIN02 태초 선택지만 적용
+   - 텍스트는 그대로, 붓 이미지만 오른쪽 이동
+========================= */
+
+.game-stage.scene-sin02
+  .choice-box:not(.fake-replay-mode):not(.ending-body-tool-mode)
+  .choice-label::after {
+  left: 6% !important;
+  width: 120% !important;
 }
