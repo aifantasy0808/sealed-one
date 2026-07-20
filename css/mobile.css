@@ -615,7 +615,7 @@ bottom: auto !important;
 /* =========================
    Mobile Start Screen UI
    - 시작 버튼/주의문구 위치
-   - iPhone Safari 합성 오류 방지
+   - iPhone Safari 글자 레이어 보정
 ========================= */
 
 @media (max-width: 900px) and (orientation: portrait) {
@@ -628,18 +628,20 @@ bottom: auto !important;
     position: relative !important;
     top: var(--title-ui-y) !important;
 
+    opacity: 0 !important;
+    visibility: hidden !important;
+    pointer-events: none !important;
+
     -webkit-transform: none !important;
     transform: none !important;
 
     -webkit-filter: none !important;
     filter: none !important;
 
-    transition:
-      opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-      visibility 0s linear 0.65s !important;
+    -webkit-backface-visibility: visible !important;
+    backface-visibility: visible !important;
 
-    -webkit-backface-visibility: hidden !important;
-    backface-visibility: hidden !important;
+    transition: opacity 0.65s ease !important;
   }
 
   #titleScreen.title-ui-ready .start-game-btn,
@@ -653,10 +655,6 @@ bottom: auto !important;
 
     -webkit-filter: none !important;
     filter: none !important;
-
-    transition:
-      opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
-      visibility 0s !important;
   }
 }
 /* =========================
