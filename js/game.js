@@ -385,7 +385,13 @@ if (isMobilePortrait() && choiceBox.children.length > 0) {
 }
 function hideSceneContent() {
   clearBodyTypingTimers();
-   backBtn.style.display = "none";
+
+  /* 이전 장면에서 계산한 모바일 UI 위치 초기화 */
+  gameStage.style.removeProperty("--mobile-choice-top");
+  gameStage.style.removeProperty("--floating-back-left");
+  gameStage.style.removeProperty("--floating-back-top");
+
+  backBtn.style.display = "none";
   bodyBox.classList.add("hidden");
   bodyBox.classList.remove("fake-strike");
   bodyBox.innerHTML = "";

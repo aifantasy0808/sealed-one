@@ -1570,7 +1570,8 @@ button {
    Ending Body ON/OFF
 ========================= */
 
-#gameStage.ending-body-hidden .body-box {
+#gameStage.ending-body-hidden .body-box,
+#gameStage.ending-body-hidden .ending-badge {
   opacity: 0 !important;
   visibility: hidden !important;
   pointer-events: none !important;
