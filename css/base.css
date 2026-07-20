@@ -1546,7 +1546,7 @@ button {
 
 #titleScreen.title-ui-ready .start-game-btn,
 #titleScreen.title-ui-ready .title-guide {
-  opacity: 1 !important;
+  opacity: 1;
   visibility: visible !important;
   pointer-events: auto !important;
 

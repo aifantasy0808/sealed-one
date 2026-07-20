@@ -174,7 +174,7 @@ bottom: auto !important;
     flex-direction: column !important;
     gap: clamp(0.55rem, 2.2vw, 0.8rem) !important;
 
-    opacity: 1 !important;
+    opacity: 1;
     visibility: visible !important;
     pointer-events: auto !important;
   }
@@ -648,10 +648,10 @@ bottom: auto !important;
     z-index: 1 !important;
     isolation: isolate !important;
 
-    opacity: 0 !important;
+    opacity: 0;
     filter: none !important;
-    transform: translateY(0.18em) !important;
-
+    transform: translateY(0.18em);
+    
     -webkit-backface-visibility: hidden !important;
     backface-visibility: hidden !important;
   }
