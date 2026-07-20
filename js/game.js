@@ -68,6 +68,27 @@ const sceneTitle = document.getElementById("sceneTitle");
 const bodyBox = document.getElementById("bodyBox");
 const choiceBox = document.getElementById("choiceBox");
 
+const trueEndTools =
+  document.getElementById("trueEndTools");
+
+const trueEndRestartBtn =
+  document.getElementById("trueEndRestartBtn");
+
+const trueEndRestartText =
+  document.getElementById("trueEndRestartText");
+
+const trueEndBodyToggleBtn =
+  document.getElementById("trueEndBodyToggleBtn");
+
+const trueEndBodyToggleBrush =
+  document.getElementById("trueEndBodyToggleBrush");
+
+const trueEndBodyToggleText =
+  document.getElementById("trueEndBodyToggleText");
+
+const trueEndBackBtn =
+  document.getElementById("trueEndBackBtn");
+
 const dialogueBox = document.getElementById("dialogueBox");
 const speakerName = document.getElementById("speakerName");
 const dialogueText = document.getElementById("dialogueText");
@@ -308,8 +329,9 @@ function scheduleFloatingUiPositions() {
     if (!hasStarted) return;
 
     updateMobileChoicePosition();
-    updateFloatingBackButtonPosition();
-    positionFakeReplayChoice();
+updateFloatingBackButtonPosition();
+positionFakeReplayChoice();
+positionTrueEndUi();
   };
 
   floatingUiRafId = requestAnimationFrame(() => {
@@ -359,6 +381,14 @@ const top = Math.round(bodyRect.bottom + gap);
 function updateFloatingBackButtonPosition() {
   if (!hasStarted) return;
   if (!backBtn) return;
+
+  /*
+    TRUE END에서는 별도의 trueEndBackBtn을 사용한다.
+  */
+  if (currentSceneId === "END_LILY") {
+    backBtn.style.display = "none";
+    return;
+  }
     // 가짜 엔딩 오버레이가 떠 있을 때는 뒤로 버튼 숨김
   if (!fakeEndingOverlay.classList.contains("hidden")) {
     backBtn.style.display = "none";
@@ -430,6 +460,7 @@ if (!isMobilePortrait()) {
 function hideSceneContent() {
   clearBodyTypingTimers();
   cancelFloatingUiSchedule();
+  hideTrueEndUi();
 
   /* 이전 장면에서 계산한 모바일 UI 위치 초기화 */
   gameStage.style.removeProperty("--mobile-choice-top");
@@ -867,6 +898,172 @@ const lines = (!isMobilePortrait() && Array.isArray(scene.bodyPc))
 
   bodyCharTimers.push(completeTimer);
 }
+
+function hideTrueEndUi() {
+  if (trueEndTools) {
+    trueEndTools.classList.add("hidden");
+
+    trueEndTools.style.removeProperty(
+      "--true-end-tools-left"
+    );
+
+    trueEndTools.style.removeProperty(
+      "--true-end-tools-top"
+    );
+  }
+
+  if (trueEndBackBtn) {
+    trueEndBackBtn.classList.add("hidden");
+
+    trueEndBackBtn.style.removeProperty(
+      "--true-end-back-left"
+    );
+
+    trueEndBackBtn.style.removeProperty(
+      "--true-end-back-top"
+    );
+  }
+}
+
+function updateTrueEndBodyToggleUi() {
+  if (
+    !trueEndBodyToggleBtn ||
+    !trueEndBodyToggleBrush ||
+    !trueEndBodyToggleText
+  ) {
+    return;
+  }
+
+  const isReopenState = endingBodyHidden;
+
+  trueEndBodyToggleText.textContent =
+    isReopenState
+      ? "설명란 다시 보기"
+      : "설명란 숨기기";
+
+  trueEndBodyToggleBrush.src =
+    isReopenState
+      ? "./assets/choice-brush-white.png"
+      : "./assets/choice-brush.png";
+
+  trueEndBodyToggleBtn.classList.toggle(
+    "is-reopen",
+    isReopenState
+  );
+
+  trueEndBodyToggleBtn.setAttribute(
+    "aria-pressed",
+    isReopenState ? "true" : "false"
+  );
+}
+
+function positionTrueEndUi() {
+  if (currentSceneId !== "END_LILY") return;
+  if (!trueEndTools || !trueEndBackBtn) return;
+  if (bodyBox.classList.contains("hidden")) return;
+  if (endingBodyHidden) return;
+
+  const bodyRect =
+    bodyBox.getBoundingClientRect();
+
+  const backRect =
+    trueEndBackBtn.getBoundingClientRect();
+
+  const backWidth =
+    backRect.width || 68;
+
+  const backHeight =
+    backRect.height || 38;
+
+  const toolsLeft =
+    bodyRect.left + bodyRect.width / 2;
+
+  const toolsTop =
+    bodyRect.bottom + 18;
+
+  const backLeft =
+    bodyRect.right - backWidth - 12;
+
+  const backTop =
+    bodyRect.bottom - backHeight - 10;
+
+  trueEndTools.style.setProperty(
+    "--true-end-tools-left",
+    `${Math.round(toolsLeft)}px`
+  );
+
+  trueEndTools.style.setProperty(
+    "--true-end-tools-top",
+    `${Math.round(toolsTop)}px`
+  );
+
+  trueEndBackBtn.style.setProperty(
+    "--true-end-back-left",
+    `${Math.round(backLeft)}px`
+  );
+
+  trueEndBackBtn.style.setProperty(
+    "--true-end-back-top",
+    `${Math.round(backTop)}px`
+  );
+}
+
+function scheduleTrueEndUiPosition() {
+  if (currentSceneId !== "END_LILY") return;
+
+  requestAnimationFrame(positionTrueEndUi);
+  setTimeout(positionTrueEndUi, 120);
+  setTimeout(positionTrueEndUi, 320);
+}
+
+function showTrueEndUi(scene) {
+  if (
+    !trueEndTools ||
+    !trueEndRestartBtn ||
+    !trueEndRestartText ||
+    !trueEndBodyToggleBtn ||
+    !trueEndBodyToggleBrush ||
+    !trueEndBodyToggleText ||
+    !trueEndBackBtn
+  ) {
+    console.error(
+      "TRUE END 전용 UI 요소를 index.html에서 찾지 못했습니다."
+    );
+    return;
+  }
+
+  /*
+    TRUE END에서는 기존 선택지 상자를 사용하지 않는다.
+  */
+  choiceBox.classList.remove("choice-ink-reveal");
+  choiceBox.classList.remove("fake-replay-mode");
+  choiceBox.classList.remove("ending-tool-mode");
+  choiceBox.classList.remove("ending-body-tool-mode");
+  choiceBox.innerHTML = "";
+
+  /*
+    전역 뒤로 버튼도 TRUE END에서는 사용하지 않는다.
+  */
+  backBtn.style.display = "none";
+
+  const restartChoice =
+    scene?.choices?.[0];
+
+  trueEndRestartText.textContent =
+    restartChoice?.label || "다시하기";
+
+  trueEndBackBtn.disabled =
+    historyStack.length === 0;
+
+  trueEndTools.classList.remove("hidden");
+
+  if (!endingBodyHidden) {
+    trueEndBackBtn.classList.remove("hidden");
+  }
+
+  updateTrueEndBodyToggleUi();
+  scheduleTrueEndUiPosition();
+}
 function renderChoices(scene) {
   choiceBox.classList.remove("choice-ink-reveal");
   choiceBox.classList.remove("fake-replay-mode");
@@ -875,14 +1072,22 @@ function renderChoices(scene) {
   clearFakeReplayPosition();
   choiceBox.innerHTML = "";
 
+  /*
+    TRUE END는 기존 choiceBox에서 완전히 분리한다.
+  */
+  if (scene.id === "END_LILY") {
+    showTrueEndUi(scene);
+    return;
+  }
+
+  hideTrueEndUi();
+
   (scene.choices || []).forEach((choice, index) => {
     const button = document.createElement("button");
     button.className = "choice-button";
     button.style.setProperty("--choice-delay", `${index * 180}ms`);
 
-    const text = scene.id === "END_LILY"
-      ? choice.label
-      : `${index + 1}. ${choice.label}`;
+    const text = `${index + 1}. ${choice.label}`;
 
     button.innerHTML = `
       <span class="choice-label">
@@ -901,39 +1106,6 @@ function renderChoices(scene) {
 
     choiceBox.appendChild(button);
   });
-
-// TRUE END도 일반 엔딩 도구 선택지와 같은 구조 사용
-if (scene.id === "END_LILY") {
-  choiceBox.classList.add("fake-replay-mode");
-  choiceBox.classList.add("ending-tool-mode");
-
-  const restartButton =
-    choiceBox.querySelector(".choice-button");
-
-  if (restartButton) {
-    restartButton.classList.add("fake-replay-choice");
-  }
-
-  const toggleBodyButton =
-    document.createElement("button");
-
-  toggleBodyButton.className =
-    "choice-button ending-body-toggle-choice";
-
-  updateEndingBodyToggleButton(toggleBodyButton);
-
-  toggleBodyButton.addEventListener("click", () => {
-    unlockAudio();
-    toggleEndingBodyVisibility(toggleBodyButton);
-  });
-
-  choiceBox.appendChild(toggleBodyButton);
-
-  requestAnimationFrame(() => {
-    positionFakeReplayChoice();
-  });
-}
-
   if (choiceBox.children.length > 0) {
   requestAnimationFrame(() => {
     choiceBox.classList.add("choice-ink-reveal");
@@ -2483,6 +2655,61 @@ backBtn.addEventListener("click", () => {
   unlockAudio();
   goBack();
 });
+
+if (
+  trueEndBackBtn &&
+  trueEndRestartBtn &&
+  trueEndBodyToggleBtn
+) {
+  trueEndBackBtn.addEventListener("click", event => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (currentSceneId !== "END_LILY") return;
+
+    unlockAudio();
+    goBack();
+  });
+
+  trueEndRestartBtn.addEventListener("click", event => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (currentSceneId !== "END_LILY") return;
+
+    const scene = getScene(currentSceneId);
+    const restartChoice = scene?.choices?.[0];
+
+    if (!restartChoice) {
+      showToast("다시하기 선택지를 찾을 수 없습니다.");
+      return;
+    }
+
+    unlockAudio();
+    handleChoice(restartChoice, 0);
+  });
+
+  trueEndBodyToggleBtn.addEventListener("click", event => {
+    event.preventDefault();
+    event.stopPropagation();
+
+    if (currentSceneId !== "END_LILY") return;
+
+    unlockAudio();
+
+    setEndingBodyHidden(!endingBodyHidden);
+    updateTrueEndBodyToggleUi();
+
+    trueEndBackBtn.classList.toggle(
+      "hidden",
+      endingBodyHidden
+    );
+
+    if (!endingBodyHidden) {
+      scheduleTrueEndUiPosition();
+    }
+  });
+}
 
 homeBtn.addEventListener("click", () => {
   unlockAudio();

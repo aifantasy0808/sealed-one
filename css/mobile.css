@@ -775,130 +775,32 @@ bottom: auto !important;
 }
 
 /* =========================================================
-   iOS WebKit TRUE END 합성 레이어 강제 분리
-   - base.css의 음수 z-index를 확실하게 덮어씀
-   - 붓 / 글자 / 뒤로 버튼을 서로 다른 3D 레이어로 분리
+   Mobile TRUE END 전용 분리 UI
 ========================================================= */
 
-@supports (-webkit-touch-callout: none) {
-  @media (max-width: 900px) and (orientation: portrait) {
+@media (max-width: 900px) and (orientation: portrait) {
+  .true-end-tools {
+    width: 76vw !important;
+    max-width: 310px !important;
 
-    /*
-      iOS Safari가 하위 요소를 하나의 평면으로 합치지 않도록 함
-    */
-    #gameStage,
-    #gameStage .play-screen,
-    #gameStage .top-controls {
-      -webkit-transform-style: preserve-3d !important;
-      transform-style: preserve-3d !important;
-    }
+    gap: 8px !important;
+  }
 
-    /*
-      설명란을 기준 레이어에 고정
-    */
-    #gameStage.pov-ending .body-box {
-      -webkit-transform: translateZ(0) !important;
-      transform: translateZ(0) !important;
+  .true-end-brush-btn {
+    width: min(76vw, 290px) !important;
+    height: 56px !important;
 
-      -webkit-backface-visibility: hidden !important;
-      backface-visibility: hidden !important;
-    }
+    font-size: clamp(
+      0.9rem,
+      3.85vw,
+      1.08rem
+    ) !important;
+  }
 
-    /*
-      TRUE END / 엔딩 도구 선택지를 설명란보다 앞쪽 레이어로 분리
-      기존 translateX(-50%)는 반드시 유지
-    */
-    #gameStage
-      .choice-box.fake-replay-mode.ending-tool-mode {
-      z-index: 980 !important;
+  .true-end-back-btn {
+    width: 72px !important;
+    height: 40px !important;
 
-      -webkit-transform:
-        translateX(-50%)
-        translateZ(2px) !important;
-
-      transform:
-        translateX(-50%)
-        translateZ(2px) !important;
-
-      -webkit-transform-style: preserve-3d !important;
-      transform-style: preserve-3d !important;
-
-      -webkit-backface-visibility: hidden !important;
-      backface-visibility: hidden !important;
-
-      will-change: transform !important;
-    }
-
-    #gameStage
-      .choice-box.fake-replay-mode.ending-tool-mode
-      .choice-button,
-    #gameStage
-      .choice-box.fake-replay-mode.ending-tool-mode
-      .choice-label {
-      position: relative !important;
-
-      -webkit-transform-style: preserve-3d !important;
-      transform-style: preserve-3d !important;
-    }
-
-    /*
-      중요:
-      base.css의 z-index: -1 !important보다
-      구체적인 선택자로 z-index: 0을 적용
-    */
-    #gameStage
-      .choice-box.fake-replay-mode.ending-tool-mode
-      .choice-label::after {
-      z-index: 0 !important;
-
-      -webkit-transform:
-        translateY(-8%)
-        rotate(2deg)
-        scaleX(1)
-        translateZ(-1px) !important;
-
-      transform:
-        translateY(-8%)
-        rotate(2deg)
-        scaleX(1)
-        translateZ(-1px) !important;
-
-      -webkit-backface-visibility: hidden !important;
-      backface-visibility: hidden !important;
-    }
-
-    /*
-      글자는 붓보다 앞쪽에 고정
-    */
-    #gameStage
-      .choice-box.fake-replay-mode.ending-tool-mode
-      .choice-char {
-      position: relative !important;
-      z-index: 2 !important;
-
-      -webkit-transform: translateZ(1px) !important;
-      transform: translateZ(1px) !important;
-
-      -webkit-backface-visibility: hidden !important;
-      backface-visibility: hidden !important;
-    }
-
-    /*
-      뒤로 버튼은 설명란과 선택지보다 가장 앞쪽 레이어
-    */
-    #gameStage.started #backBtn {
-      z-index: 9999 !important;
-
-      -webkit-transform: translateZ(4px) !important;
-      transform: translateZ(4px) !important;
-
-      -webkit-transform-style: preserve-3d !important;
-      transform-style: preserve-3d !important;
-
-      -webkit-backface-visibility: hidden !important;
-      backface-visibility: hidden !important;
-
-      will-change: transform !important;
-    }
+    font-size: 0.9rem !important;
   }
 }
