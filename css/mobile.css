@@ -612,24 +612,51 @@ bottom: auto !important;
     gap: 10px !important;
   }
 }
-
 /* =========================
    Mobile Start Screen UI
    - 시작 버튼/주의문구 위치
+   - iPhone Safari 합성 오류 방지
 ========================= */
 
 @media (max-width: 900px) and (orientation: portrait) {
   #titleScreen {
     --title-ui-y: 11vh;
   }
-}
 
-@media (max-width: 900px) and (orientation: portrait) {
-  .game-stage.scene-sin02
-    .choice-box:not(.fake-replay-mode):not(.ending-body-tool-mode)
-    .choice-label::after {
-    left: 2% !important;
-    width: 120% !important;
+  #titleScreen .start-game-btn,
+  #titleScreen .title-guide {
+    position: relative !important;
+    top: var(--title-ui-y) !important;
+
+    -webkit-transform: none !important;
+    transform: none !important;
+
+    -webkit-filter: none !important;
+    filter: none !important;
+
+    transition:
+      opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0s linear 0.65s !important;
+
+    -webkit-backface-visibility: hidden !important;
+    backface-visibility: hidden !important;
+  }
+
+  #titleScreen.title-ui-ready .start-game-btn,
+  #titleScreen.title-ui-ready .title-guide {
+    opacity: 1 !important;
+    visibility: visible !important;
+    pointer-events: auto !important;
+
+    -webkit-transform: none !important;
+    transform: none !important;
+
+    -webkit-filter: none !important;
+    filter: none !important;
+
+    transition:
+      opacity 0.65s cubic-bezier(0.16, 1, 0.3, 1),
+      visibility 0s !important;
   }
 }
 /* =========================
@@ -651,7 +678,7 @@ bottom: auto !important;
     opacity: 0;
     filter: none !important;
     transform: translateY(0.18em);
-    
+
     -webkit-backface-visibility: hidden !important;
     backface-visibility: hidden !important;
   }
