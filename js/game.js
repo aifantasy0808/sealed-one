@@ -2744,12 +2744,40 @@ function refreshFloatingUiPositions() {
   positionFakeReplayChoice();
 }
 
-window.addEventListener("resize", refreshFloatingUiPositions);
+let lastFloatingUiWidth = window.innerWidth;
 
-if (window.visualViewport) {
-  window.visualViewport.addEventListener("resize", refreshFloatingUiPositions);
-  window.visualViewport.addEventListener("scroll", refreshFloatingUiPositions);
+function refreshFloatingUiAfterRealResize() {
+  const currentWidth = window.innerWidth;
+
+  const widthChanged =
+    Math.abs(currentWidth - lastFloatingUiWidth) > 2;
+
+  /*
+    아이폰 Safari에서 주소창이나 하단 메뉴만 움직인 경우
+    화면 높이만 변하므로 선택지 위치를 다시 계산하지 않음
+  */
+  if (isMobilePortrait() && !widthChanged) {
+    return;
+  }
+
+  lastFloatingUiWidth = currentWidth;
+  refreshFloatingUiPositions();
 }
+
+window.addEventListener(
+  "resize",
+  refreshFloatingUiAfterRealResize
+);
+
+/*
+  실제 화면 회전 때는 위치를 다시 계산
+*/
+window.addEventListener("orientationchange", () => {
+  setTimeout(() => {
+    lastFloatingUiWidth = window.innerWidth;
+    refreshFloatingUiPositions();
+  }, 180);
+});
 
 setupRouteDrag();
 setupBodyDragScroll();
