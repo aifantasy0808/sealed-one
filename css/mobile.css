@@ -441,6 +441,15 @@ bottom: auto !important;
 /* TRUE END 모바일 선택지 전용 */
 .game-stage.scene-end_lily
   .choice-box.ending-body-tool-mode {
+  position: fixed !important;
+
+  left: 50% !important;
+  top: var(--mobile-choice-top, 68%) !important;
+  right: auto !important;
+  bottom: auto !important;
+
+  transform: translateX(-50%) !important;
+
   width: auto !important;
   max-width: 290px !important;
 
@@ -808,12 +817,6 @@ bottom: auto !important;
   }
 }
 
-@media (max-width: 900px) and (orientation: portrait) {
-  .choice-box.ending-body-tool-mode:not(.fake-replay-mode) {
-    top: var(--mobile-choice-top, 68%) !important;
-    bottom: auto !important;
-  }
-}
 
 /* =========================
    SIN02 태초 모바일 선택지 전용

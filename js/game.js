@@ -48,6 +48,10 @@ let mobileVideoPanning = false;
 let mobileVideoPanStartX = 0;
 let mobileVideoPanStartPercent = 50;
 let mobileVideoPanMoved = false;
+let floatingUiRafId = null;
+let floatingUiTimerId = null;
+let floatingUiRevision = 0;
+let viewportUiRefreshTimer = null;
 
 const NAME_PUNISH_VIDEO_SRC = "videos/name_fail.mp4";
 
@@ -179,10 +183,14 @@ function restoreMobileViewportAfterInput() {
   };
 
   requestAnimationFrame(restore);
-  setTimeout(restore, 80);
-  setTimeout(restore, 220);
-}
+setTimeout(restore, 80);
+setTimeout(restore, 220);
 
+setTimeout(() => {
+  restore();
+  scheduleFloatingUiPositions();
+}, 520);
+}
 function setupMobileVisualViewport() {
   syncMobileVisualViewport();
 
@@ -268,12 +276,63 @@ changeBgm(scene.bgmSrc);
     scene
   );
 }
-function scheduleFloatingBackButtonPosition() {
-  requestAnimationFrame(() => {
+function cancelFloatingUiSchedule() {
+  floatingUiRevision += 1;
+
+  if (floatingUiRafId !== null) {
+    cancelAnimationFrame(floatingUiRafId);
+    floatingUiRafId = null;
+  }
+
+  if (floatingUiTimerId !== null) {
+    clearTimeout(floatingUiTimerId);
+    floatingUiTimerId = null;
+  }
+}
+
+function scheduleFloatingUiPositions() {
+  const revision = floatingUiRevision;
+  const sceneId = currentSceneId;
+
+  if (floatingUiRafId !== null) {
+    cancelAnimationFrame(floatingUiRafId);
+  }
+
+  if (floatingUiTimerId !== null) {
+    clearTimeout(floatingUiTimerId);
+  }
+
+  const updatePositions = () => {
+    if (revision !== floatingUiRevision) return;
+    if (sceneId !== currentSceneId) return;
+    if (!hasStarted) return;
+
+    updateMobileChoicePosition();
     updateFloatingBackButtonPosition();
+    positionFakeReplayChoice();
+  };
+
+  floatingUiRafId = requestAnimationFrame(() => {
+    floatingUiRafId = null;
+    updatePositions();
   });
 
-  setTimeout(updateFloatingBackButtonPosition, 120);
+  /*
+    아이폰 Safari의 키보드·주소창·웹폰트 재배치가
+    끝난 뒤 최종 위치를 한 번 더 계산
+  */
+  floatingUiTimerId = setTimeout(() => {
+    floatingUiTimerId = null;
+    updatePositions();
+  }, 320);
+}
+
+function scheduleFloatingBackButtonPosition() {
+  scheduleFloatingUiPositions();
+}
+
+function scheduleMobileChoicePosition() {
+  scheduleFloatingUiPositions();
 }
 
 function updateMobileChoicePosition() {
@@ -305,11 +364,6 @@ function updateMobileChoicePosition() {
   );
 }
 
-function scheduleMobileChoicePosition() {
-  requestAnimationFrame(updateMobileChoicePosition);
-  setTimeout(updateMobileChoicePosition, 80);
-  setTimeout(updateMobileChoicePosition, 220);
-}
 function updateFloatingBackButtonPosition() {
   if (!hasStarted) return;
   if (!backBtn) return;
@@ -344,8 +398,14 @@ const targetBox = bodyBox;
   const buttonWidth = buttonRect.width || 62;
   const buttonHeight = buttonRect.height || 36;
 
-  const sideGap = isMobilePortrait() ? 12 : 20;
-  const bottomGap = isMobilePortrait() ? 12 : 16;
+  const isTrueEnd =
+  gameStage.classList.contains("scene-end_lily");
+
+const sideGap = isMobilePortrait() ? 12 : 20;
+
+const bottomGap = isMobilePortrait()
+  ? (isTrueEnd ? 6 : 12)
+  : 16;
 
 let left;
 let top;
@@ -362,21 +422,28 @@ if (isMobilePortrait()) {
 
   const screenGap = isMobilePortrait() ? 8 : 14;
 
-  left = Math.max(
-    screenGap,
-    Math.min(window.innerWidth - buttonWidth - screenGap, left)
-  );
+left = Math.max(
+  screenGap,
+  Math.min(window.innerWidth - buttonWidth - screenGap, left)
+);
 
+/*
+  모바일에서는 설명란 자체가 화면 안에 고정되어 있으므로
+  Safari의 변동하는 innerHeight로 세로 위치를 다시 제한하지 않는다.
+*/
+if (!isMobilePortrait()) {
   top = Math.max(
     screenGap,
     Math.min(window.innerHeight - buttonHeight - screenGap, top)
   );
+}
 
   gameStage.style.setProperty("--floating-back-left", `${left}px`);
   gameStage.style.setProperty("--floating-back-top", `${top}px`);
 }
 function hideSceneContent() {
   clearBodyTypingTimers();
+  cancelFloatingUiSchedule();
 
   /* 이전 장면에서 계산한 모바일 UI 위치 초기화 */
   gameStage.style.removeProperty("--mobile-choice-top");
@@ -2735,42 +2802,54 @@ function refreshFloatingUiPositions() {
   scheduleMobileChoicePosition();
   positionFakeReplayChoice();
 }
-
-let lastFloatingUiWidth = window.innerWidth;
-
-function refreshFloatingUiAfterRealResize() {
-  const currentWidth = window.innerWidth;
-
-  const widthChanged =
-    Math.abs(currentWidth - lastFloatingUiWidth) > 2;
-
-  /*
-    아이폰 Safari에서 주소창이나 하단 메뉴만 움직인 경우
-    화면 높이만 변하므로 선택지 위치를 다시 계산하지 않음
-  */
-  if (isMobilePortrait() && !widthChanged) {
-    return;
+function scheduleViewportUiRefresh() {
+  if (viewportUiRefreshTimer !== null) {
+    clearTimeout(viewportUiRefreshTimer);
   }
 
-  lastFloatingUiWidth = currentWidth;
-  refreshFloatingUiPositions();
+  /*
+    Safari 주소창이나 키보드가 움직이는 동안에는 기다리고,
+    화면 변화가 끝난 뒤 한 번만 다시 계산
+  */
+  viewportUiRefreshTimer = setTimeout(() => {
+    viewportUiRefreshTimer = null;
+
+    syncMobileVisualViewport();
+    scheduleFloatingUiPositions();
+  }, 260);
 }
 
 window.addEventListener(
   "resize",
-  refreshFloatingUiAfterRealResize
+  scheduleViewportUiRefresh
 );
 
-/*
-  실제 화면 회전 때는 위치를 다시 계산
-*/
+if (window.visualViewport) {
+  window.visualViewport.addEventListener(
+    "resize",
+    scheduleViewportUiRefresh
+  );
+
+  window.visualViewport.addEventListener(
+    "scroll",
+    scheduleViewportUiRefresh
+  );
+}
+
 window.addEventListener("orientationchange", () => {
   setTimeout(() => {
-    lastFloatingUiWidth = window.innerWidth;
-    refreshFloatingUiPositions();
-  }, 180);
+    syncMobileVisualViewport();
+    scheduleFloatingUiPositions();
+  }, 320);
+});
+const bodyResizeObserver = new ResizeObserver(() => {
+  if (!hasStarted) return;
+  if (bodyBox.classList.contains("hidden")) return;
+
+  scheduleFloatingUiPositions();
 });
 
+bodyResizeObserver.observe(bodyBox);
 setupRouteDrag();
 setupBodyDragScroll();
 setupMobileVisualViewport();
