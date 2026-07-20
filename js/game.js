@@ -347,16 +347,8 @@ function updateMobileChoicePosition() {
 
   const bodyRect = bodyBox.getBoundingClientRect();
 
-  /*
-    TRUE END는 버튼이 2개이고 붓 이미지도 크기 때문에
-    일반 장면보다 설명란과 간격을 조금 더 둔다.
-  */
-  const isTrueEnd =
-    gameStage.classList.contains("scene-end_lily") &&
-    choiceBox.classList.contains("ending-body-tool-mode");
-
-  const gap = isTrueEnd ? 34 : 26;
-  const top = Math.round(bodyRect.bottom + gap);
+const gap = 26;
+const top = Math.round(bodyRect.bottom + gap);
 
   gameStage.style.setProperty(
     "--mobile-choice-top",
@@ -398,14 +390,8 @@ const targetBox = bodyBox;
   const buttonWidth = buttonRect.width || 62;
   const buttonHeight = buttonRect.height || 36;
 
-  const isTrueEnd =
-  gameStage.classList.contains("scene-end_lily");
-
-const sideGap = isMobilePortrait() ? 12 : 20;
-
-const bottomGap = isMobilePortrait()
-  ? (isTrueEnd ? 6 : 12)
-  : 16;
+  const sideGap = isMobilePortrait() ? 12 : 20;
+const bottomGap = isMobilePortrait() ? 12 : 16;
 
 let left;
 let top;
@@ -459,7 +445,6 @@ function hideSceneContent() {
 choiceBox.classList.remove("choice-ink-reveal");
 choiceBox.classList.remove("fake-replay-mode");
 choiceBox.classList.remove("ending-tool-mode");
-choiceBox.classList.remove("ending-body-tool-mode");
 clearFakeReplayPosition();
 choiceBox.innerHTML = "";
   dialogueBox.classList.add("hidden");
@@ -917,22 +902,37 @@ function renderChoices(scene) {
     choiceBox.appendChild(button);
   });
 
-  // TRUE END 전용: 설명란 ON/OFF 버튼 추가
-  if (scene.id === "END_LILY") {
-    choiceBox.classList.add("ending-body-tool-mode");
+// TRUE END도 일반 엔딩 도구 선택지와 같은 구조 사용
+if (scene.id === "END_LILY") {
+  choiceBox.classList.add("fake-replay-mode");
+  choiceBox.classList.add("ending-tool-mode");
 
-    const toggleBodyButton = document.createElement("button");
-    toggleBodyButton.className = "choice-button ending-body-toggle-choice";
+  const restartButton =
+    choiceBox.querySelector(".choice-button");
 
-    updateEndingBodyToggleButton(toggleBodyButton);
-
-    toggleBodyButton.addEventListener("click", () => {
-      unlockAudio();
-      toggleEndingBodyVisibility(toggleBodyButton);
-    });
-
-    choiceBox.appendChild(toggleBodyButton);
+  if (restartButton) {
+    restartButton.classList.add("fake-replay-choice");
   }
+
+  const toggleBodyButton =
+    document.createElement("button");
+
+  toggleBodyButton.className =
+    "choice-button ending-body-toggle-choice";
+
+  updateEndingBodyToggleButton(toggleBodyButton);
+
+  toggleBodyButton.addEventListener("click", () => {
+    unlockAudio();
+    toggleEndingBodyVisibility(toggleBodyButton);
+  });
+
+  choiceBox.appendChild(toggleBodyButton);
+
+  requestAnimationFrame(() => {
+    positionFakeReplayChoice();
+  });
+}
 
   if (choiceBox.children.length > 0) {
   requestAnimationFrame(() => {

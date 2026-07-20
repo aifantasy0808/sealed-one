@@ -1375,18 +1375,6 @@ button {
   gap: clamp(0.9rem, 1.2vw, 1.25rem) !important;
 }
 
-/* TRUE END는 화면 중앙 아래에 고정 */
-.choice-box.ending-body-tool-mode {
-  position: absolute !important;
-  left: 50% !important;
-  bottom: 12.5% !important;
-  transform: translateX(-50%) !important;
-
-  width: auto !important;
-  max-width: none !important;
-  z-index: 180 !important;
-}
-
 /* 모든 엔딩 도구 버튼 공통 */
 .choice-box.fake-replay-mode.ending-tool-mode .choice-button,
 .choice-box.ending-body-tool-mode .choice-button {

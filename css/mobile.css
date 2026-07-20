@@ -253,16 +253,16 @@ bottom: auto !important;
     animation: none;
   }
 
-  .choice-box:not(.fake-replay-mode):not(.ending-body-tool-mode) .choice-label::after {
-    left: -5% !important;
-    bottom: 0% !important;
+  .choice-box:not(.fake-replay-mode) .choice-label::after {
+  left: -5% !important;
+  bottom: 0% !important;
 
-    width: 120% !important;
-    height: 130% !important;
+  width: 120% !important;
+  height: 130% !important;
 
-    transform: translateY(-8%) rotate(2deg) scaleX(1);
-    transform-origin: left center !important;
-  }
+  transform: translateY(-8%) rotate(2deg) scaleX(1);
+  transform-origin: left center !important;
+}
   .input-panel {
     position: fixed !important;
     left: 28px !important;
@@ -413,80 +413,22 @@ bottom: auto !important;
     letter-spacing: 0.22em !important;
   }
 
-  .pov-ending .body-box {
-    top: calc(env(safe-area-inset-top, 0px) + 252px) !important;
-    left: 44px !important;
-    width: calc(100vw - 88px) !important;
-    height: 36dvh !important;
-    max-height: 36dvh !important;
-  }
+.pov-ending .body-box {
+  top: calc(env(safe-area-inset-top, 0px) + 252px) !important;
+  left: 44px !important;
+  width: calc(100vw - 88px) !important;
 
-  .pov-ending .body-scroll-content {
-    padding: 22px 30px 52px !important;
-  }
-  /* TRUE END 설명란만 본문 길이에 맞춰 축소 */
-.game-stage.scene-end_lily .body-box {
   height: auto !important;
   max-height: 36dvh !important;
 }
 
-.game-stage.scene-end_lily .body-scroll-content {
+.pov-ending .body-scroll-content {
   padding: 22px 30px 24px !important;
 }
 
 .pov-ending .choice-box:not(.fake-replay-mode) {
   top: var(--mobile-choice-top, 68%) !important;
   bottom: auto !important;
-}
-/* TRUE END 모바일 선택지 전용 */
-.game-stage.scene-end_lily
-  .choice-box.ending-body-tool-mode {
-  position: fixed !important;
-
-  left: 50% !important;
-  top: var(--mobile-choice-top, 68%) !important;
-  right: auto !important;
-  bottom: auto !important;
-
-  transform: translateX(-50%) !important;
-
-  width: auto !important;
-  max-width: 290px !important;
-
-  align-items: center !important;
-  gap: 6px !important;
-}
-
-.game-stage.scene-end_lily
-  .choice-box.ending-body-tool-mode
-  .choice-button {
-  width: auto !important;
-  min-width: 210px !important;
-  max-width: 290px !important;
-
-  padding-left: 0 !important;
-  padding-right: 0 !important;
-
-  text-align: center !important;
-}
-
-.game-stage.scene-end_lily
-  .choice-box.ending-body-tool-mode
-  .choice-label {
-  display: inline-block !important;
-  width: auto !important;
-
-  padding-left: 0.8em !important;
-  padding-right: 0.8em !important;
-
-  text-align: center !important;
-}
-
-.game-stage.scene-end_lily
-  .choice-box.ending-body-tool-mode
-  .choice-label::after {
-  left: -8% !important;
-  width: 116% !important;
 }
 
   .fake-ending-overlay {
@@ -650,15 +592,6 @@ bottom: auto !important;
   }
 }
 
-/* =========================
-   Mobile TRUE END Body ON/OFF
-========================= */
-
-@media (max-width: 900px) and (orientation: portrait) {
-  .choice-box.ending-body-tool-mode {
-    gap: 10px !important;
-  }
-}
 /* =========================
    Mobile Start Screen UI
    - 시작 버튼/주의문구 위치
@@ -827,15 +760,15 @@ bottom: auto !important;
 @media (max-width: 900px) and (orientation: portrait) {
   /* 위치는 다른 일반 장면과 비슷한 높이로 맞춤 */
   .game-stage.scene-sin02
-    .choice-box:not(.fake-replay-mode):not(.ending-body-tool-mode) {
+  .choice-box:not(.fake-replay-mode) {
     top: max(var(--mobile-choice-top, 68%), 66dvh) !important;
     bottom: auto !important;
   }
 
   /* 하얀색 / 검은색처럼 짧은 글자에만 붓 크기 보정 */
   .game-stage.scene-sin02
-    .choice-box:not(.fake-replay-mode):not(.ending-body-tool-mode)
-    .choice-label::after {
+  .choice-box:not(.fake-replay-mode)
+  .choice-label::after {
     left: 2% !important;
     width: 120% !important;
   }
