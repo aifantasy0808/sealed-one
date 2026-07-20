@@ -441,9 +441,6 @@ bottom: auto !important;
 /* TRUE END 모바일 선택지 전용 */
 .game-stage.scene-end_lily
   .choice-box.ending-body-tool-mode {
-  top: calc(var(--mobile-choice-top, 68%) + 32px) !important;
-  bottom: auto !important;
-
   width: auto !important;
   max-width: 290px !important;
 

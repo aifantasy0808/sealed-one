@@ -275,6 +275,7 @@ function scheduleFloatingBackButtonPosition() {
 
   setTimeout(updateFloatingBackButtonPosition, 120);
 }
+
 function updateMobileChoicePosition() {
   if (!isMobilePortrait()) {
     gameStage.style.removeProperty("--mobile-choice-top");
@@ -286,23 +287,17 @@ function updateMobileChoicePosition() {
   if (choiceBox.classList.contains("fake-replay-mode")) return;
 
   const bodyRect = bodyBox.getBoundingClientRect();
-  const choiceRect = choiceBox.getBoundingClientRect();
 
-  /* 설명란과 선택지 사이 간격 */
-  const gap = 22;
+  /*
+    TRUE END는 버튼이 2개이고 붓 이미지도 크기 때문에
+    일반 장면보다 설명란과 간격을 조금 더 둔다.
+  */
+  const isTrueEnd =
+    gameStage.classList.contains("scene-end_lily") &&
+    choiceBox.classList.contains("ending-body-tool-mode");
 
-  /* 화면 아래 안전 여백 */
-  const bottomSafeArea = 42;
-
-  let top = bodyRect.bottom + gap;
-
-  const maxTop =
-    window.innerHeight -
-    choiceRect.height -
-    bottomSafeArea;
-
-  top = Math.min(top, maxTop);
-  top = Math.max(bodyRect.bottom + 12, top);
+  const gap = isTrueEnd ? 34 : 26;
+  const top = Math.round(bodyRect.bottom + gap);
 
   gameStage.style.setProperty(
     "--mobile-choice-top",
@@ -364,10 +359,7 @@ if (isMobilePortrait()) {
   left = rect.right - buttonWidth - 16;
   top = rect.bottom - buttonHeight - 28;
 }
-if (isMobilePortrait() && choiceBox.children.length > 0) {
-  const choiceRect = choiceBox.getBoundingClientRect();
-  top = Math.min(top, choiceRect.top - buttonHeight - 12);
-}
+
   const screenGap = isMobilePortrait() ? 8 : 14;
 
   left = Math.max(
