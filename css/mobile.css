@@ -1052,3 +1052,262 @@ transform:
   display: none !important;
 }
 }
+/* =========================================================
+   iPhone Safari Scene Content Stack
+   - bodyBox 좌표 계산 제거
+   - bodyBox / backBtn / choiceBox 실제 구조로 연결
+   - Galaxy 및 PC에는 적용되지 않음
+========================================================= */
+
+@supports (-webkit-touch-callout: none) {
+  @media (max-width: 900px) and (orientation: portrait) {
+
+    /* =========================
+       공통 콘텐츠 묶음
+    ========================= */
+
+    #gameStage .scene-content-stack {
+      position: fixed !important;
+
+      left: 44px !important;
+      right: 44px !important;
+
+      top:
+        calc(
+          env(safe-area-inset-top, 0px) +
+          190px
+        ) !important;
+
+      width: auto !important;
+      height: auto !important;
+
+      display: flex !important;
+      flex-direction: column !important;
+
+      gap: 26px !important;
+
+      z-index: 700 !important;
+
+      pointer-events: none !important;
+
+      transform: none !important;
+      -webkit-transform: none !important;
+
+      contain: none !important;
+    }
+
+    /* =========================
+       설명란 묶음
+    ========================= */
+
+    #gameStage .scene-content-stack
+      .body-shell {
+      position: relative !important;
+
+      width: 100% !important;
+      height: auto !important;
+
+      margin: 0 !important;
+      padding: 0 !important;
+
+      pointer-events: auto !important;
+
+      transform: none !important;
+      -webkit-transform: none !important;
+
+      contain: none !important;
+    }
+
+    /* =========================
+       설명란
+    ========================= */
+
+    #gameStage .scene-content-stack
+      #bodyBox.body-box {
+      position: relative !important;
+
+      left: auto !important;
+      right: auto !important;
+
+      top: auto !important;
+      bottom: auto !important;
+
+      width: 100% !important;
+
+      height: auto !important;
+      min-height: 0 !important;
+      max-height: 42dvh !important;
+
+      margin: 0 !important;
+
+      transform: none !important;
+      -webkit-transform: none !important;
+
+      z-index: 700 !important;
+
+      pointer-events: auto !important;
+    }
+
+    /* =========================
+       선택지
+    ========================= */
+
+    #gameStage .scene-content-stack
+      #choiceBox.choice-box {
+      position: relative !important;
+
+      left: auto !important;
+      right: auto !important;
+
+      top: auto !important;
+      bottom: auto !important;
+
+      width: 100% !important;
+      max-width: none !important;
+
+      margin: 0 !important;
+
+      transform: none !important;
+      -webkit-transform: none !important;
+
+      z-index: 760 !important;
+
+      pointer-events: auto !important;
+    }
+
+    /*
+      fake-replay-mode의 base.css fixed 위치도
+      아이폰에서는 완전히 무효화
+    */
+    #gameStage .scene-content-stack
+      #choiceBox.choice-box.fake-replay-mode,
+    #gameStage .scene-content-stack
+      #choiceBox.choice-box.ending-tool-mode,
+    #gameStage .scene-content-stack
+      #choiceBox.choice-box.ending-body-tool-mode,
+    #gameStage .scene-content-stack
+      #choiceBox.choice-box.true-end-choice-mode {
+      position: relative !important;
+
+      left: auto !important;
+      right: auto !important;
+
+      top: auto !important;
+      bottom: auto !important;
+
+      width: 100% !important;
+
+      transform: none !important;
+      -webkit-transform: none !important;
+    }
+
+    /* =========================
+       뒤로 버튼
+    ========================= */
+
+    #gameStage.started
+      .scene-content-stack
+      #backBtn.scene-back-btn {
+      position: absolute !important;
+
+      left: auto !important;
+      right: 12px !important;
+
+      top: auto !important;
+      bottom: 12px !important;
+
+      width: auto !important;
+
+      transform: none !important;
+      -webkit-transform: none !important;
+
+      z-index: 920 !important;
+
+      pointer-events: auto !important;
+    }
+
+    /* =========================
+       엔딩 공통
+    ========================= */
+
+    #gameStage.pov-ending
+      .scene-content-stack {
+      top:
+        calc(
+          env(safe-area-inset-top, 0px) +
+          252px
+        ) !important;
+
+      gap: 18px !important;
+    }
+
+    #gameStage.pov-ending
+      .scene-content-stack
+      #bodyBox.body-box {
+      height: auto !important;
+      min-height: 0 !important;
+      max-height: 36dvh !important;
+    }
+
+    /* =========================
+       TRUE END
+    ========================= */
+
+    #gameStage.scene-end_lily
+      .scene-content-stack {
+      gap: 10px !important;
+    }
+
+    #gameStage.scene-end_lily
+      .scene-content-stack
+      #bodyBox.body-box {
+      height:
+        clamp(
+          220px,
+          34svh,
+          300px
+        ) !important;
+
+      min-height:
+        clamp(
+          220px,
+          34svh,
+          300px
+        ) !important;
+
+      max-height:
+        clamp(
+          220px,
+          34svh,
+          300px
+        ) !important;
+    }
+
+    #gameStage.scene-end_lily
+      .scene-content-stack
+      #choiceBox.true-end-choice-mode {
+      display: flex !important;
+      flex-direction: column !important;
+      align-items: center !important;
+
+      gap: 8px !important;
+    }
+
+    #gameStage.scene-end_lily
+      .scene-content-stack
+      #choiceBox.true-end-choice-mode
+      .choice-button {
+      width: auto !important;
+
+      min-width: 210px !important;
+      max-width: 290px !important;
+    }
+
+    /* 설명란을 숨기면 뒤로 버튼도 숨김 */
+    #gameStage.scene-end_lily.ending-body-hidden
+      .scene-content-stack
+      #backBtn {
+      display: none !important;
+    }
+  }
+}

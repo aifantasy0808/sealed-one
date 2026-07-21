@@ -113,7 +113,19 @@ function getScene(id) {
 function isMobilePortrait() {
   return window.matchMedia("(max-width: 900px) and (orientation: portrait)").matches;
 }
+function isIosWebKit() {
+  const userAgent =
+    navigator.userAgent || "";
 
+  const isIphoneOrIpad =
+    /iPad|iPhone|iPod/.test(userAgent);
+
+  const isModernIpad =
+    navigator.platform === "MacIntel" &&
+    navigator.maxTouchPoints > 1;
+
+  return isIphoneOrIpad || isModernIpad;
+}
 function getSceneVisualClass(scene) {
   const sceneClass = scene?.id ? `scene-${scene.id.toLowerCase()}` : "";
 
@@ -336,23 +348,66 @@ function scheduleMobileChoicePosition() {
 }
 function updateMobileChoicePosition() {
   if (!isMobilePortrait()) {
-    gameStage.style.removeProperty("--mobile-choice-top");
+    gameStage.style.removeProperty(
+      "--mobile-choice-top"
+    );
+
     return;
   }
 
-  if (!choiceBox || choiceBox.children.length === 0) return;
-  if (!bodyBox || bodyBox.classList.contains("hidden")) return;
+  /*
+    아이폰에서는 설명란과 선택지를 실제 HTML 구조로 묶었으므로
+    JavaScript로 좌표를 측정하지 않는다.
+  */
+  if (isIosWebKit()) {
+    gameStage.style.removeProperty(
+      "--mobile-choice-top"
+    );
+
+    return;
+  }
 
   /*
-    가짜 엔딩과 TRUE END는 별도의 CSS 위치를 사용한다.
+    갤럭시 등 기존 모바일 레이아웃은
+    현재 정상 동작하므로 기존 계산 방식을 유지한다.
   */
-  if (choiceBox.classList.contains("fake-replay-mode")) return;
-  if (choiceBox.classList.contains("true-end-choice-mode")) return;
+  if (
+    !choiceBox ||
+    choiceBox.children.length === 0
+  ) {
+    return;
+  }
 
-  const bodyRect = bodyBox.getBoundingClientRect();
+  if (
+    !bodyBox ||
+    bodyBox.classList.contains("hidden")
+  ) {
+    return;
+  }
+
+  if (
+    choiceBox.classList.contains(
+      "fake-replay-mode"
+    )
+  ) {
+    return;
+  }
+
+  if (
+    choiceBox.classList.contains(
+      "true-end-choice-mode"
+    )
+  ) {
+    return;
+  }
+
+  const bodyRect =
+    bodyBox.getBoundingClientRect();
 
   const gap = 26;
-  const top = Math.round(bodyRect.bottom + gap);
+
+  const top =
+    Math.round(bodyRect.bottom + gap);
 
   gameStage.style.setProperty(
     "--mobile-choice-top",
@@ -364,8 +419,48 @@ function updateFloatingBackButtonPosition() {
   if (!backBtn) return;
 
   /*
-    모바일 TRUE END에서는 bodyBox 좌표를 측정하지 않는다.
-    mobile.css에 설정한 고정 위치만 사용한다.
+    아이폰에서는 뒤로 버튼이 body-shell 안에 들어 있으므로
+    위치를 JavaScript로 계산하지 않는다.
+  */
+  if (
+    isMobilePortrait() &&
+    isIosWebKit()
+  ) {
+    const isBodyVisible =
+      !bodyBox.classList.contains("hidden");
+
+    const isDialogueVisible =
+      !dialogueBox.classList.contains("hidden");
+
+    const isFakeOverlayVisible =
+      !fakeEndingOverlay.classList.contains("hidden");
+
+    const shouldHideBack =
+      endingBodyHidden ||
+      !isBodyVisible ||
+      isDialogueVisible ||
+      isFakeOverlayVisible;
+
+    if (shouldHideBack) {
+      backBtn.style.display = "none";
+    } else {
+      backBtn.style.removeProperty("display");
+    }
+
+    gameStage.style.removeProperty(
+      "--floating-back-left"
+    );
+
+    gameStage.style.removeProperty(
+      "--floating-back-top"
+    );
+
+    return;
+  }
+
+  /*
+    갤럭시 모바일 TRUE END에서는
+    기존 CSS 고정 위치 사용
   */
   if (
     currentSceneId === "END_LILY" &&
@@ -395,10 +490,9 @@ function updateFloatingBackButtonPosition() {
     return;
   }
 
-  /*
-    가짜 엔딩 오버레이가 떠 있을 때는 뒤로 버튼 숨김
-  */
-  if (!fakeEndingOverlay.classList.contains("hidden")) {
+  if (
+    !fakeEndingOverlay.classList.contains("hidden")
+  ) {
     backBtn.style.display = "none";
     return;
   }
@@ -409,17 +503,14 @@ function updateFloatingBackButtonPosition() {
   const isDialogueVisible =
     !dialogueBox.classList.contains("hidden");
 
-  /*
-    대사창만 표시될 때는 뒤로 버튼 숨김
-  */
-  if (isDialogueVisible && !isBodyVisible) {
+  if (
+    isDialogueVisible &&
+    !isBodyVisible
+  ) {
     backBtn.style.display = "none";
     return;
   }
 
-  /*
-    본문 설명란이 없으면 뒤로 버튼 숨김
-  */
   if (!isBodyVisible) {
     backBtn.style.display = "none";
     return;
@@ -427,8 +518,11 @@ function updateFloatingBackButtonPosition() {
 
   backBtn.style.removeProperty("display");
 
-  const rect = bodyBox.getBoundingClientRect();
-  const buttonRect = backBtn.getBoundingClientRect();
+  const rect =
+    bodyBox.getBoundingClientRect();
+
+  const buttonRect =
+    backBtn.getBoundingClientRect();
 
   const buttonWidth =
     buttonRect.width || 62;
@@ -480,9 +574,6 @@ function updateFloatingBackButtonPosition() {
     )
   );
 
-  /*
-    모바일은 세로 좌표를 innerHeight로 다시 제한하지 않는다.
-  */
   if (!isMobilePortrait()) {
     top = Math.max(
       screenGap,
@@ -1566,21 +1657,63 @@ function updateEndingBodyToggleButton(button) {
   button.setAttribute("aria-pressed", endingBodyHidden ? "true" : "false");
 }
 function positionFakeReplayChoice() {
-  if (!choiceBox.classList.contains("fake-replay-mode")) return;
-  if (bodyBox.classList.contains("hidden")) return;
+  if (
+    !choiceBox.classList.contains(
+      "fake-replay-mode"
+    )
+  ) {
+    return;
+  }
 
-  const rect = bodyBox.getBoundingClientRect();
+  if (
+    bodyBox.classList.contains("hidden")
+  ) {
+    return;
+  }
 
-  const gap = isMobilePortrait() ? 28 : 22;
-  const bottomRoom = isMobilePortrait() ? 120 : 96;
+  /*
+    아이폰에서는 일반 흐름 배치 사용
+  */
+  if (
+    isMobilePortrait() &&
+    isIosWebKit()
+  ) {
+    clearFakeReplayPosition();
+    return;
+  }
 
-  const viewportHeight = window.innerHeight;
-  const left = rect.left + rect.width / 2;
-  const top = Math.min(rect.bottom + gap, viewportHeight - bottomRoom);
+  const rect =
+    bodyBox.getBoundingClientRect();
 
-  gameStage.style.setProperty("--fake-replay-left", `${left}px`);
-  gameStage.style.setProperty("--fake-replay-top", `${top}px`);
+  const gap =
+    isMobilePortrait() ? 28 : 22;
+
+  const bottomRoom =
+    isMobilePortrait() ? 120 : 96;
+
+  const viewportHeight =
+    window.innerHeight;
+
+  const left =
+    rect.left + rect.width / 2;
+
+  const top =
+    Math.min(
+      rect.bottom + gap,
+      viewportHeight - bottomRoom
+    );
+
+  gameStage.style.setProperty(
+    "--fake-replay-left",
+    `${left}px`
+  );
+
+  gameStage.style.setProperty(
+    "--fake-replay-top",
+    `${top}px`
+  );
 }
+
 function renderFakeReplayChoice(scene) {
   if (!scene) return;
 
@@ -1590,48 +1723,95 @@ function renderFakeReplayChoice(scene) {
 
   if (!canReplay) return;
 
-  choiceBox.classList.remove("choice-ink-reveal");
-  choiceBox.classList.add("fake-replay-mode");
-  choiceBox.classList.add("ending-tool-mode");
+  choiceBox.classList.remove(
+    "choice-ink-reveal"
+  );
+
+  choiceBox.classList.add(
+    "fake-replay-mode"
+  );
+
+  choiceBox.classList.add(
+    "ending-tool-mode"
+  );
+
   choiceBox.innerHTML = "";
 
-  const replayButton = document.createElement("button");
-  replayButton.className = "choice-button fake-replay-choice";
+  const replayButton =
+    document.createElement("button");
+
+  replayButton.className =
+    "choice-button fake-replay-choice";
 
   replayButton.innerHTML = `
     <span class="choice-label">
-      ${createChoiceTextSpans("대사 다시 보기", 0)}
+      ${createChoiceTextSpans(
+        "대사 다시 보기",
+        0
+      )}
     </span>
   `;
 
-  replayButton.addEventListener("click", () => {
-    unlockAudio();
+  replayButton.addEventListener(
+    "click",
+    () => {
+      unlockAudio();
 
-    choiceBox.classList.remove("choice-ink-reveal");
-    choiceBox.classList.remove("fake-replay-mode");
-    choiceBox.classList.remove("ending-tool-mode");
-    clearFakeReplayPosition();
-    choiceBox.innerHTML = "";
+      choiceBox.classList.remove(
+        "choice-ink-reveal"
+      );
 
-    fakeSequenceStarted = false;
-    startFakeSequence(scene, true);
-  });
+      choiceBox.classList.remove(
+        "fake-replay-mode"
+      );
 
-  const toggleBodyButton = document.createElement("button");
-  toggleBodyButton.className = "choice-button ending-body-toggle-choice";
-  updateEndingBodyToggleButton(toggleBodyButton);
+      choiceBox.classList.remove(
+        "ending-tool-mode"
+      );
 
-  toggleBodyButton.addEventListener("click", () => {
-    unlockAudio();
-    toggleEndingBodyVisibility(toggleBodyButton);
-  });
+      clearFakeReplayPosition();
+      choiceBox.innerHTML = "";
 
-  choiceBox.appendChild(replayButton);
-  choiceBox.appendChild(toggleBodyButton);
+      fakeSequenceStarted = false;
+      startFakeSequence(scene, true);
+    }
+  );
+
+  const toggleBodyButton =
+    document.createElement("button");
+
+  toggleBodyButton.className =
+    "choice-button ending-body-toggle-choice";
+
+  updateEndingBodyToggleButton(
+    toggleBodyButton
+  );
+
+  toggleBodyButton.addEventListener(
+    "click",
+    () => {
+      unlockAudio();
+
+      toggleEndingBodyVisibility(
+        toggleBodyButton
+      );
+    }
+  );
+
+  choiceBox.appendChild(
+    replayButton
+  );
+
+  choiceBox.appendChild(
+    toggleBodyButton
+  );
 
   requestAnimationFrame(() => {
     positionFakeReplayChoice();
-    choiceBox.classList.add("choice-ink-reveal");
+
+    choiceBox.classList.add(
+      "choice-ink-reveal"
+    );
   });
 }
 function startFakeSequence(scene, fast = false) {

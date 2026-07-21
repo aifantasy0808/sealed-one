@@ -5,9 +5,9 @@
   <meta name="robots" content="noindex, nofollow" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>봉인된 자</title>
-  <link rel="stylesheet" href="./css/base.css?v=34" />
-<link rel="stylesheet" href="./css/pc.css?v=34" />
-<link rel="stylesheet" href="./css/mobile.css?v=34" />
+  <link rel="stylesheet" href="./css/base.css?v=35" />
+<link rel="stylesheet" href="./css/pc.css?v=35" />
+<link rel="stylesheet" href="./css/mobile.css?v=35" />
 </head>
 <body>
   <div id="app">
@@ -22,12 +22,11 @@
         <audio id="bgmAudio" loop></audio>
 
         <header class="top-controls">
-          <button id="routeBtn" class="top-btn">루트</button>
-          <button id="saveBtn" class="top-btn">저장</button>
-          <button id="backBtn" class="top-btn" aria-label="뒤로가기">뒤로</button>
-          <button id="homeBtn" class="top-btn home-btn">처음</button>
-          <button id="videoPauseBtn" class="top-btn pause-btn" type="button" aria-label="영상 일시정지">정지</button>
-        </header>
+  <button id="routeBtn" class="top-btn">루트</button>
+  <button id="saveBtn" class="top-btn">저장</button>
+  <button id="homeBtn" class="top-btn home-btn">처음</button>
+  <button id="videoPauseBtn" class="top-btn pause-btn" type="button" aria-label="영상 일시정지">정지</button>
+</header>
 
         <main class="scene-layer">
           <section id="titleScreen" class="title-screen">
@@ -40,10 +39,22 @@
             <div id="endingBadge" class="ending-badge hidden"></div>
             <div id="sceneTitle" class="scene-title hidden"></div>
 
-            <section id="bodyBox" class="body-box"></section>
+           <div id="sceneContentStack" class="scene-content-stack">
+  <div class="body-shell">
+    <section id="bodyBox" class="body-box"></section>
 
-            <section id="choiceBox" class="choice-box"></section>
+    <button
+      id="backBtn"
+      class="top-btn scene-back-btn"
+      type="button"
+      aria-label="뒤로가기"
+    >
+      뒤로
+    </button>
+  </div>
 
+  <section id="choiceBox" class="choice-box"></section>
+</div>
             <section id="inputPanel" class="input-panel hidden">
               <label for="nameInput">봉인된 자, 이름을 말하라</label>
               <div class="input-row">
@@ -134,7 +145,7 @@
     </filter>
   </svg>
 
-  <script src="./js/scenes.js?v=34"></script>
-<script src="./js/game.js?v=34"></script>
+  <script src="./js/scenes.js?v=35"></script>
+<script src="./js/game.js?v=35"></script>
 </body>
 </html>
