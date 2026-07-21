@@ -1728,11 +1728,15 @@ function toggleEndingBodyVisibility(button) {
   setEndingBodyHidden(!endingBodyHidden);
   updateEndingBodyToggleButton(button);
 }
-
 function updateEndingBodyToggleButton(button) {
   if (!button) return;
 
-  const text = endingBodyHidden ? "설명란 다시 보기" : "설명란 숨기기";
+  const isReopen =
+    endingBodyHidden === true;
+
+  const text = isReopen
+    ? "설명란 다시 보기"
+    : "설명란 숨기기";
 
   button.innerHTML = `
     <span class="choice-label">
@@ -1740,7 +1744,34 @@ function updateEndingBodyToggleButton(button) {
     </span>
   `;
 
-  button.setAttribute("aria-pressed", endingBodyHidden ? "true" : "false");
+  /*
+    버튼에도 상태 표시
+  */
+  button.classList.toggle(
+    "is-reopen",
+    isReopen
+  );
+
+  button.setAttribute(
+    "aria-pressed",
+    isReopen ? "true" : "false"
+  );
+
+  /*
+    Safari가 pseudo-element를 확실히 다시 그리도록
+    붓을 가진 choice-label에 직접 클래스 추가
+  */
+  const label =
+    button.querySelector(".choice-label");
+
+  if (label) {
+    label.classList.toggle(
+      "is-white-brush",
+      isReopen
+    );
+
+    void label.offsetWidth;
+  }
 }
 function positionFakeReplayChoice() {
   if (

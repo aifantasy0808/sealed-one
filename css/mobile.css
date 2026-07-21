@@ -803,7 +803,7 @@ bottom: auto !important;
       clamp(220px, 34svh, 300px);
 
     --true-end-choice-gap:
-      clamp(10px, 1.8svh, 16px);
+      clamp(20px, 3svh, 30px);
   }
 
   /* =========================
@@ -961,7 +961,10 @@ bottom: auto !important;
     height: 120% !important;
 
     background-image:
-      url("../assets/choice-brush.png") !important;
+  var(
+    --true-end-choice-brush,
+    url("../assets/choice-brush.png")
+  ) !important;
 
     background-repeat:
       no-repeat !important;
@@ -1290,12 +1293,8 @@ transform:
   flex-direction: column !important;
   align-items: center !important;
 
-  gap: 8px !important;
+  gap: 6px !important;
 
-  /*
-    TRUE END 선택지를 설명란에서 조금 더 아래로
-  */
-  margin-top: 10px !important;
 }
 
     #gameStage.scene-end_lily
@@ -1314,5 +1313,47 @@ transform:
       #backBtn {
       display: none !important;
     }
+  }
+}
+/* =========================================================
+   TRUE END 설명란 다시 보기 상태
+   - 기존 붓 pseudo-element의 이미지 변수만 변경
+========================================================= */
+
+@media (max-width: 900px) and (orientation: portrait) {
+
+  #gameStage.scene-end_lily
+    #choiceBox.true-end-choice-mode
+    .ending-body-toggle-choice.is-reopen,
+
+  #gameStage.scene-end_lily
+    #choiceBox.true-end-choice-mode
+    .ending-body-toggle-choice[aria-pressed="true"] {
+    --true-end-choice-brush:
+      url("../assets/choice-brush-white.png");
+
+    color:
+      rgba(22, 22, 22, 0.98) !important;
+
+    text-shadow:
+      0 1px 2px rgba(255, 255, 255, 0.7),
+      0 0 2px rgba(255, 255, 255, 0.45) !important;
+  }
+
+  #gameStage.scene-end_lily
+    #choiceBox.true-end-choice-mode
+    .ending-body-toggle-choice.is-reopen
+    .choice-char,
+
+  #gameStage.scene-end_lily
+    #choiceBox.true-end-choice-mode
+    .ending-body-toggle-choice[aria-pressed="true"]
+    .choice-char {
+    color:
+      rgba(22, 22, 22, 0.98) !important;
+
+    text-shadow:
+      0 1px 2px rgba(255, 255, 255, 0.7),
+      0 0 2px rgba(255, 255, 255, 0.45) !important;
   }
 }
