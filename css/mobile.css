@@ -1284,14 +1284,19 @@ transform:
     }
 
     #gameStage.scene-end_lily
-      .scene-content-stack
-      #choiceBox.true-end-choice-mode {
-      display: flex !important;
-      flex-direction: column !important;
-      align-items: center !important;
+  .scene-content-stack
+  #choiceBox.true-end-choice-mode {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
 
-      gap: 8px !important;
-    }
+  gap: 8px !important;
+
+  /*
+    TRUE END 선택지를 설명란에서 조금 더 아래로
+  */
+  margin-top: 10px !important;
+}
 
     #gameStage.scene-end_lily
       .scene-content-stack

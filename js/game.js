@@ -231,6 +231,8 @@ function renderScene() {
   clearFakeTimers();
   resetFakeEffect();
   resetEndingBodyVisibility();
+  resetSceneContentLayoutState();
+
   isNameInputOpen = false;
   ignoreNameInputOutsideClose = false;
   blockClickAfterNameClose = false;
@@ -287,6 +289,26 @@ changeBgm(scene.bgmSrc);
     },
     scene
   );
+  /*
+  TRUE END를 빠져나온 직후에도
+  새 장면의 레이아웃을 다시 확정
+*/
+requestAnimationFrame(() => {
+  if (
+    currentSceneId !== scene.id ||
+    !hasStarted
+  ) {
+    return;
+  }
+
+  resetSceneContentLayoutState();
+
+  /*
+    reset 함수가 choiceBox 내용을 지우는 것은 아니므로
+    아직 본문 출력 전에는 안전하다.
+  */
+  scheduleFloatingUiPositions();
+});
 }
 function cancelFloatingUiSchedule() {
   floatingUiRevision += 1;
@@ -1629,7 +1651,71 @@ function resetEndingBodyVisibility() {
   endingBodyHidden = false;
   gameStage.classList.remove("ending-body-hidden");
 }
+function resetSceneContentLayoutState() {
+  /*
+    TRUE END와 가짜 엔딩에서 사용한
+    choiceBox 전용 상태를 완전히 초기화
+  */
+  choiceBox.classList.remove(
+    "choice-ink-reveal",
+    "fake-replay-mode",
+    "ending-tool-mode",
+    "ending-body-tool-mode",
+    "true-end-choice-mode"
+  );
 
+  /*
+    이전 장면에서 계산하거나 사용한 좌표 제거
+  */
+  gameStage.style.removeProperty(
+    "--mobile-choice-top"
+  );
+
+  gameStage.style.removeProperty(
+    "--floating-back-left"
+  );
+
+  gameStage.style.removeProperty(
+    "--floating-back-top"
+  );
+
+  gameStage.style.removeProperty(
+    "--fake-replay-left"
+  );
+
+  gameStage.style.removeProperty(
+    "--fake-replay-top"
+  );
+
+  /*
+    버튼에 남아 있을 수 있는 인라인 위치 초기화
+  */
+  backBtn.style.removeProperty("left");
+  backBtn.style.removeProperty("right");
+  backBtn.style.removeProperty("top");
+  backBtn.style.removeProperty("bottom");
+  backBtn.style.removeProperty("transform");
+  backBtn.style.removeProperty("display");
+
+  choiceBox.style.removeProperty("left");
+  choiceBox.style.removeProperty("right");
+  choiceBox.style.removeProperty("top");
+  choiceBox.style.removeProperty("bottom");
+  choiceBox.style.removeProperty("transform");
+  choiceBox.style.removeProperty("margin-top");
+
+  endingBodyHidden = false;
+
+  gameStage.classList.remove(
+    "ending-body-hidden"
+  );
+
+  /*
+    Safari가 이전 합성 레이어를 다시 사용하지 않도록
+    현재 레이아웃을 한 번 확정
+  */
+  void choiceBox.offsetWidth;
+}
 function setEndingBodyHidden(hidden) {
   endingBodyHidden = hidden;
   gameStage.classList.toggle("ending-body-hidden", endingBodyHidden);
