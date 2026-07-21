@@ -1315,6 +1315,22 @@ transform:
     }
   }
 }
+
+/* =========================
+   SIN02 태초
+   - 본문이 짧아도 선택지 위치 고정
+========================= */
+
+#gameStage.scene-sin02
+  .scene-content-stack
+  #bodyBox.body-box {
+  min-height:
+  clamp(
+    320px,
+    30svh,
+    320px
+  ) !important;
+}
 /* =========================================================
    TRUE END 설명란 다시 보기 상태
    - 기존 붓 pseudo-element의 이미지 변수만 변경
